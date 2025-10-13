@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, Bell, LogOut, User, Shield, Wrench, ChevronDown } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, Home, Bell, LogOut, User, Shield, Wrench } from 'lucide-react';
+import { logout, isAuthenticated, getUserType } from '../utils/auth';
 
-const Navbar = ({ showAuthButtons = true, notifications = 0, userType = null }) => {
+const Navbar = ({ notifications = 0 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const isLoggedIn = isAuthenticated();
+  const userType = getUserType();
 
   const isActive = (path) => location.pathname === path;
+
+  const handleLogout = () => {
+    logout();
+    setMobileMenuOpen(false);
+    navigate('/');
+  };
 
   const recentNotifications = [
     { id: 1, text: "New booking request from Ali Raza", time: "2 mins ago", unread: true },
@@ -37,7 +48,8 @@ const Navbar = ({ showAuthButtons = true, notifications = 0, userType = null }) 
             </div>
           </Link>
 
-          {showAuthButtons ? (
+          {/* Show Auth Buttons if NOT logged in */}
+          {!isLoggedIn ? (
             <>
               {/* Desktop Menu - Enhanced */}
               <div className="hidden md:flex items-center space-x-2">
@@ -76,6 +88,13 @@ const Navbar = ({ showAuthButtons = true, notifications = 0, userType = null }) 
                   <Shield size={18} className="group-hover:scale-110 transition-transform" />
                   Admin Login
                 </Link>
+
+                <Link
+                  to="/register"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold transition-all duration-300 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 shadow-lg hover:shadow-xl hover:scale-105"
+                >
+                  Register
+                </Link>
               </div>
 
               {/* Mobile Menu Button */}
@@ -89,6 +108,15 @@ const Navbar = ({ showAuthButtons = true, notifications = 0, userType = null }) 
           ) : (
             /* Authenticated User Menu - Enhanced */
             <div className="flex items-center gap-4">
+              {/* Dashboard Link */}
+              <Link
+                to={userType === 'admin' ? '/admin-dashboard' : '/vendor-dashboard'}
+                className="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all duration-300 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20"
+              >
+                <Home size={18} />
+                Dashboard
+              </Link>
+
               {/* User Type Badge */}
               <div className="hidden md:flex items-center gap-2 bg-gradient-to-r from-white/20 to-white/10 backdrop-blur-md px-5 py-2.5 rounded-xl border border-white/30 shadow-lg">
                 {userType === 'vendor' ? (
@@ -109,7 +137,7 @@ const Navbar = ({ showAuthButtons = true, notifications = 0, userType = null }) 
               </div>
 
               {/* Enhanced Notifications */}
-              <div className="relative">
+              <div className="relative hidden md:block">
                 <button
                   onClick={() => setShowNotifications(!showNotifications)}
                   className="relative p-3 rounded-xl hover:bg-white/10 transition-all duration-300 border border-white/20 group"
@@ -157,13 +185,21 @@ const Navbar = ({ showAuthButtons = true, notifications = 0, userType = null }) 
               </div>
 
               {/* Logout Button - Enhanced */}
-              <Link
-                to="/"
+              <button
+                onClick={handleLogout}
                 className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 border border-red-400"
               >
                 <LogOut size={18} />
                 <span className="hidden sm:inline">Logout</span>
-              </Link>
+              </button>
+
+              {/* Mobile Menu Button for Authenticated Users */}
+              <button
+                className="md:hidden p-3 rounded-xl hover:bg-white/10 transition-colors border border-white/20"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
             </div>
           )}
         </div>
@@ -173,42 +209,107 @@ const Navbar = ({ showAuthButtons = true, notifications = 0, userType = null }) 
       {mobileMenuOpen && (
         <div className="md:hidden bg-gradient-to-b from-blue-900/95 to-indigo-900/95 backdrop-blur-xl border-t border-white/10 shadow-2xl">
           <div className="px-4 py-6 space-y-3">
-            <Link
-              to="/"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 px-5 py-4 rounded-xl font-semibold transition-all ${
-                isActive('/')
-                  ? 'bg-white/20 shadow-lg border border-white/30'
-                  : 'hover:bg-white/10 border border-transparent'
-              }`}
-            >
-              <Home size={22} />
-              <span className="text-lg">Home</span>
-            </Link>
-            <Link
-              to="/login/vendor"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 px-5 py-4 rounded-xl font-semibold transition-all ${
-                isActive('/login/vendor')
-                  ? 'bg-white text-blue-700 shadow-lg'
-                  : 'hover:bg-white/10 border border-transparent'
-              }`}
-            >
-              <User size={22} />
-              <span className="text-lg">Vendor Login</span>
-            </Link>
-            <Link
-              to="/login/admin"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 px-5 py-4 rounded-xl font-semibold transition-all ${
-                isActive('/login/admin')
-                  ? 'bg-white text-blue-700 shadow-lg'
-                  : 'hover:bg-white/10 border border-transparent'
-              }`}
-            >
-              <Shield size={22} />
-              <span className="text-lg">Admin Login</span>
-            </Link>
+            {!isLoggedIn ? (
+              <>
+                <Link
+                  to="/"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-5 py-4 rounded-xl font-semibold transition-all ${
+                    isActive('/')
+                      ? 'bg-white/20 shadow-lg border border-white/30'
+                      : 'hover:bg-white/10 border border-transparent'
+                  }`}
+                >
+                  <Home size={22} />
+                  <span className="text-lg">Home</span>
+                </Link>
+                <Link
+                  to="/login/vendor"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-5 py-4 rounded-xl font-semibold transition-all ${
+                    isActive('/login/vendor')
+                      ? 'bg-white text-blue-700 shadow-lg'
+                      : 'hover:bg-white/10 border border-transparent'
+                  }`}
+                >
+                  <User size={22} />
+                  <span className="text-lg">Vendor Login</span>
+                </Link>
+                <Link
+                  to="/login/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-5 py-4 rounded-xl font-semibold transition-all ${
+                    isActive('/login/admin')
+                      ? 'bg-white text-blue-700 shadow-lg'
+                      : 'hover:bg-white/10 border border-transparent'
+                  }`}
+                >
+                  <Shield size={22} />
+                  <span className="text-lg">Admin Login</span>
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-5 py-4 rounded-xl font-semibold transition-all bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg"
+                >
+                  <User size={22} />
+                  <span className="text-lg">Register</span>
+                </Link>
+              </>
+            ) : (
+              <>
+                {/* Mobile User Badge */}
+                <div className="flex items-center gap-3 px-5 py-4 rounded-xl bg-white/20 border border-white/30">
+                  {userType === 'vendor' ? (
+                    <>
+                      <div className="bg-blue-500 p-2 rounded-lg">
+                        <User size={20} className="text-white" />
+                      </div>
+                      <span className="font-bold text-lg">Vendor Panel</span>
+                    </>
+                  ) : (
+                    <>
+                      <div className="bg-purple-500 p-2 rounded-lg">
+                        <Shield size={20} className="text-white" />
+                      </div>
+                      <span className="font-bold text-lg">Admin Panel</span>
+                    </>
+                  )}
+                </div>
+
+                {/* Dashboard Link */}
+                <Link
+                  to={userType === 'admin' ? '/admin-dashboard' : '/vendor-dashboard'}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-5 py-4 rounded-xl font-semibold transition-all hover:bg-white/10"
+                >
+                  <Home size={22} />
+                  <span className="text-lg">Dashboard</span>
+                </Link>
+
+                {/* Mobile Notifications */}
+                <button className="flex items-center gap-3 px-5 py-4 rounded-xl font-semibold transition-all hover:bg-white/10 w-full">
+                  <div className="relative">
+                    <Bell size={22} />
+                    {notifications > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                        {notifications}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-lg">Notifications</span>
+                </button>
+
+                {/* Logout */}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-3 px-5 py-4 rounded-xl font-semibold transition-all bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 w-full"
+                >
+                  <LogOut size={22} />
+                  <span className="text-lg">Logout</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
