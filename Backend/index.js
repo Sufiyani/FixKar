@@ -27,7 +27,7 @@ createAdmin();
 
 // Routes
 app.get("/", (req, res) => {
-  res.send("🏏 Indoor Booking System API Running 🚀");
+  res.send( "FixKar system running🚀");
 });
 
 app.use("/api/admin", adminRoutes);

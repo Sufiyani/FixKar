@@ -27,10 +27,8 @@ export const createAdmin = async () => {
         password: hashedPassword,
       });
       await admin.save();
-      console.log("✅ Admin created successfully (from .env)");
-    } else {
-      console.log("⚙️ Admin already exists");
-    }
+     
+    } 
   } catch (error) {
     console.error("❌ Error creating admin:", error);
   }
