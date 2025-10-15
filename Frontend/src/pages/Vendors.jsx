@@ -1,666 +1,80 @@
-
-// import React, { useState } from 'react';
-// import { Search, Filter, Star, MapPin, Phone, Mail, Briefcase, Clock, Shield, TrendingUp, CheckCircle } from 'lucide-react';
-
-// const Vendors = () => {
-//   const [searchTerm, setSearchTerm] = useState('');
-//   const [selectedCategory, setSelectedCategory] = useState('All');
-//   const [selectedLocation, setSelectedLocation] = useState('All');
-
-//   // Hardcoded Vendors Data (Replace with API call later)
-//   const vendors = [
-//     {
-//       id: 1,
-//       name: 'Ali Raza',
-//       category: 'Plumber',
-//       location: 'Gulshan-e-Iqbal',
-//       city: 'Karachi',
-//       rating: 4.8,
-//       reviews: 156,
-//       experience: '5 years',
-//       phone: '+92-300-1234567',
-//       email: 'ali.raza@fixkar.com',
-//       price: 'Rs. 500-1500',
-//       image: '👨‍🔧',
-//       available: true,
-//       completedJobs: 234,
-//       verified: true,
-//       description: 'Expert in all types of plumbing work including pipe fitting, leak repairs, and bathroom installations.',
-//       services: ['Pipe Fitting', 'Leak Repair', 'Bathroom Installation', 'Water Tank Cleaning']
-//     },
-//     {
-//       id: 2,
-//       name: 'Ahmed Khan',
-//       category: 'Electrician',
-//       location: 'Defence',
-//       city: 'Karachi',
-//       rating: 4.9,
-//       reviews: 203,
-//       experience: '7 years',
-//       phone: '+92-301-2345678',
-//       email: 'ahmed.khan@fixkar.com',
-//       price: 'Rs. 600-2000',
-//       image: '⚡',
-//       available: true,
-//       completedJobs: 312,
-//       verified: true,
-//       description: 'Licensed electrician specializing in residential and commercial electrical work.',
-//       services: ['Wiring', 'Circuit Breaker', 'Fan Installation', 'Light Fixtures']
-//     },
-//     {
-//       id: 3,
-//       name: 'Hassan Ali',
-//       category: 'Mechanic',
-//       location: 'Clifton',
-//       city: 'Karachi',
-//       rating: 4.7,
-//       reviews: 134,
-//       experience: '4 years',
-//       phone: '+92-302-3456789',
-//       email: 'hassan.ali@fixkar.com',
-//       price: 'Rs. 800-2500',
-//       image: '🔧',
-//       available: false,
-//       completedJobs: 178,
-//       verified: true,
-//       description: 'Professional car mechanic with expertise in all major car brands.',
-//       services: ['Engine Repair', 'Oil Change', 'Brake Service', 'AC Repair']
-//     },
-//     {
-//       id: 4,
-//       name: 'Bilal Ahmed',
-//       category: 'Carpenter',
-//       location: 'North Nazimabad',
-//       city: 'Karachi',
-//       rating: 4.6,
-//       reviews: 98,
-//       experience: '6 years',
-//       phone: '+92-303-4567890',
-//       email: 'bilal.ahmed@fixkar.com',
-//       price: 'Rs. 700-2200',
-//       image: '🪚',
-//       available: true,
-//       completedJobs: 145,
-//       verified: true,
-//       description: 'Skilled carpenter for custom furniture, kitchen cabinets, and wooden fixtures.',
-//       services: ['Furniture Making', 'Cabinet Installation', 'Door Repair', 'Wood Flooring']
-//     },
-//     {
-//       id: 5,
-//       name: 'Imran Malik',
-//       category: 'Painter',
-//       location: 'Malir',
-//       city: 'Karachi',
-//       rating: 4.5,
-//       reviews: 87,
-//       experience: '3 years',
-//       phone: '+92-304-5678901',
-//       email: 'imran.malik@fixkar.com',
-//       price: 'Rs. 400-1800',
-//       image: '🎨',
-//       available: true,
-//       completedJobs: 112,
-//       verified: true,
-//       description: 'Professional painter for interior and exterior painting services.',
-//       services: ['Interior Painting', 'Exterior Painting', 'Wall Textures', 'Color Consultation']
-//     },
-//     {
-//       id: 6,
-//       name: 'Farhan Shah',
-//       category: 'AC Technician',
-//       location: 'Saddar',
-//       city: 'Karachi',
-//       rating: 4.9,
-//       reviews: 221,
-//       experience: '8 years',
-//       phone: '+92-305-6789012',
-//       email: 'farhan.shah@fixkar.com',
-//       price: 'Rs. 900-3000',
-//       image: '❄️',
-//       available: true,
-//       completedJobs: 289,
-//       verified: true,
-//       description: 'AC expert for installation, repair, and maintenance of all AC brands.',
-//       services: ['AC Installation', 'AC Repair', 'Gas Refilling', 'Maintenance']
-//     },
-//     {
-//       id: 7,
-//       name: 'Usman Ali',
-//       category: 'Plumber',
-//       location: 'Korangi',
-//       city: 'Karachi',
-//       rating: 4.4,
-//       reviews: 76,
-//       experience: '4 years',
-//       phone: '+92-306-7890123',
-//       email: 'usman.ali@fixkar.com',
-//       price: 'Rs. 450-1400',
-//       image: '👨‍🔧',
-//       available: true,
-//       completedJobs: 98,
-//       verified: true,
-//       description: 'Reliable plumber for emergency and routine plumbing services.',
-//       services: ['Emergency Repairs', 'Drain Cleaning', 'Fixture Installation', 'Water Heater']
-//     },
-//     {
-//       id: 8,
-//       name: 'Zain Abbas',
-//       category: 'Electrician',
-//       location: 'Gulistan-e-Jauhar',
-//       city: 'Karachi',
-//       rating: 4.7,
-//       reviews: 142,
-//       experience: '5 years',
-//       phone: '+92-307-8901234',
-//       email: 'zain.abbas@fixkar.com',
-//       price: 'Rs. 550-1900',
-//       image: '⚡',
-//       available: true,
-//       completedJobs: 187,
-//       verified: true,
-//       description: 'Certified electrician for home and office electrical solutions.',
-//       services: ['Panel Upgrades', 'Smart Home Setup', 'Generator Installation', 'Emergency Service']
-//     }
-//   ];
-
-//   const categories = [
-//     { name: 'All', icon: '🏠' },
-//     { name: 'Plumber', icon: '🚰' },
-//     { name: 'Electrician', icon: '💡' },
-//     { name: 'Mechanic', icon: '🔧' },
-//     { name: 'Carpenter', icon: '🪵' },
-//     { name: 'Painter', icon: '🎨' },
-//     { name: 'AC Technician', icon: '❄️' }
-//   ];
-
-//   const locations = [
-//     'All',
-//     'Gulshan-e-Iqbal',
-//     'Defence',
-//     'Clifton',
-//     'North Nazimabad',
-//     'Malir',
-//     'Saddar',
-//     'Korangi',
-//     'Gulistan-e-Jauhar'
-//   ];
-
-//   // Filter vendors
-//   const filteredVendors = vendors.filter(vendor => {
-//     const matchesSearch = vendor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//                          vendor.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//                          vendor.location.toLowerCase().includes(searchTerm.toLowerCase());
-//     const matchesCategory = selectedCategory === 'All' || vendor.category === selectedCategory;
-//     const matchesLocation = selectedLocation === 'All' || vendor.location === selectedLocation;
-    
-//     return matchesSearch && matchesCategory && matchesLocation;
-//   });
-
-//   return (
-//     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-//       {/* Header Section */}
-//       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 py-16">
-//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-//           <div className="text-center mb-8">
-//             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-//               Find Your Perfect Service Provider
-//             </h1>
-//             <p className="text-xl text-blue-100">
-//               Browse through {vendors.length} verified professionals in Karachi
-//             </p>
-//           </div>
-
-//           {/* Search Bar */}
-//           <div className="max-w-4xl mx-auto">
-//             <div className="bg-white rounded-2xl shadow-2xl p-2 flex gap-2">
-//               <div className="flex-1 relative">
-//                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-//                 <input
-//                   type="text"
-//                   placeholder="Search by name, category, or location..."
-//                   value={searchTerm}
-//                   onChange={(e) => setSearchTerm(e.target.value)}
-//                   className="w-full pl-12 pr-4 py-3 text-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-//                 />
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-
-//       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-//         <div className="flex flex-col lg:flex-row gap-8">
-//           {/* Filters Sidebar */}
-//           <div className="lg:w-64 flex-shrink-0">
-//             <div className="bg-white rounded-2xl p-6 shadow-lg sticky top-4">
-//               <div className="flex items-center gap-2 mb-6">
-//                 <Filter className="text-blue-600" size={24} />
-//                 <h2 className="text-xl font-bold text-gray-900">Filters</h2>
-//               </div>
-
-//               {/* Category Filter */}
-//               <div className="mb-6">
-//                 <h3 className="font-semibold text-gray-900 mb-3">Category</h3>
-//                 <div className="space-y-2">
-//                   {categories.map(cat => (
-//                     <button
-//                       key={cat.name}
-//                       onClick={() => setSelectedCategory(cat.name)}
-//                       className={`w-full text-left px-4 py-2 rounded-lg transition-all flex items-center gap-2 ${
-//                         selectedCategory === cat.name
-//                           ? 'bg-blue-600 text-white'
-//                           : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
-//                       }`}
-//                     >
-//                       <span>{cat.icon}</span>
-//                       <span>{cat.name}</span>
-//                     </button>
-//                   ))}
-//                 </div>
-//               </div>
-
-//               {/* Location Filter */}
-//               <div>
-//                 <h3 className="font-semibold text-gray-900 mb-3">Location</h3>
-//                 <select
-//                   value={selectedLocation}
-//                   onChange={(e) => setSelectedLocation(e.target.value)}
-//                   className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-//                 >
-//                   {locations.map(loc => (
-//                     <option key={loc} value={loc}>{loc}</option>
-//                   ))}
-//                 </select>
-//               </div>
-
-//               {/* Clear Filters */}
-//               {(selectedCategory !== 'All' || selectedLocation !== 'All') && (
-//                 <button
-//                   onClick={() => {
-//                     setSelectedCategory('All');
-//                     setSelectedLocation('All');
-//                   }}
-//                   className="w-full mt-4 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
-//                 >
-//                   Clear Filters
-//                 </button>
-//               )}
-//             </div>
-//           </div>
-
-//           {/* Vendors Grid */}
-//           <div className="flex-1">
-//             {/* Results Header */}
-//             <div className="flex items-center justify-between mb-6">
-//               <div>
-//                 <h2 className="text-2xl font-bold text-gray-900">
-//                   {filteredVendors.length} Professional{filteredVendors.length !== 1 ? 's' : ''} Found
-//                 </h2>
-//                 <p className="text-gray-600">
-//                   {selectedCategory !== 'All' && `Category: ${selectedCategory}`}
-//                   {selectedLocation !== 'All' && ` • Location: ${selectedLocation}`}
-//                 </p>
-//               </div>
-//               <div className="flex items-center gap-2 text-sm text-gray-600">
-//                 <TrendingUp size={16} className="text-blue-600" />
-//                 <span>Sorted by rating</span>
-//               </div>
-//             </div>
-
-//             {/* Vendors List */}
-//             {filteredVendors.length > 0 ? (
-//               <div className="space-y-6">
-//                 {filteredVendors.map(vendor => (
-//                   <div
-//                     key={vendor.id}
-//                     className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all border-2 border-gray-100 hover:border-blue-300"
-//                   >
-//                     <div className="flex flex-col md:flex-row gap-6">
-//                       {/* Vendor Image/Icon */}
-//                       <div className="flex-shrink-0">
-//                         <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center text-5xl shadow-lg">
-//                           {vendor.image}
-//                         </div>
-//                         {vendor.available ? (
-//                           <div className="mt-3 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold text-center">
-//                             Available Now
-//                           </div>
-//                         ) : (
-//                           <div className="mt-3 bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold text-center">
-//                             Busy
-//                           </div>
-//                         )}
-//                       </div>
-
-//                       {/* Vendor Details */}
-//                       <div className="flex-1">
-//                         <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-3">
-//                           <div>
-//                             <div className="flex items-center gap-2 mb-2">
-//                               <h3 className="text-2xl font-bold text-gray-900">{vendor.name}</h3>
-//                               {vendor.verified && (
-//                                 <div className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full flex items-center gap-1 text-xs">
-//                                   <Shield size={12} />
-//                                   <span>Verified</span>
-//                                 </div>
-//                               )}
-//                             </div>
-//                             <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
-//                               <span className="flex items-center gap-1">
-//                                 <Briefcase size={16} className="text-blue-600" />
-//                                 {vendor.category}
-//                               </span>
-//                               <span className="flex items-center gap-1">
-//                                 <MapPin size={16} className="text-red-600" />
-//                                 {vendor.location}, {vendor.city}
-//                               </span>
-//                               <span className="flex items-center gap-1">
-//                                 <Clock size={16} className="text-green-600" />
-//                                 {vendor.experience}
-//                               </span>
-//                             </div>
-//                           </div>
-//                           <div className="text-right">
-//                             <div className="flex items-center gap-1 mb-1">
-//                               <Star className="text-yellow-500 fill-yellow-500" size={20} />
-//                               <span className="text-xl font-bold text-gray-900">{vendor.rating}</span>
-//                               <span className="text-sm text-gray-600">({vendor.reviews} reviews)</span>
-//                             </div>
-//                             <div className="text-sm text-gray-600">
-//                               <CheckCircle size={14} className="inline text-green-600" /> {vendor.completedJobs} jobs completed
-//                             </div>
-//                           </div>
-//                         </div>
-
-//                         <p className="text-gray-700 mb-4">{vendor.description}</p>
-
-//                         {/* Services Tags */}
-//                         <div className="flex flex-wrap gap-2 mb-4">
-//                           {vendor.services.map((service, idx) => (
-//                             <span
-//                               key={idx}
-//                               className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium"
-//                             >
-//                               {service}
-//                             </span>
-//                           ))}
-//                         </div>
-
-//                         {/* Contact & Price */}
-//                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 border-t border-gray-200">
-//                           <div className="flex gap-4">
-//                             <a
-//                               href={`tel:${vendor.phone}`}
-//                               className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
-//                             >
-//                               <Phone size={18} />
-//                               <span className="hidden sm:inline">{vendor.phone}</span>
-//                             </a>
-//                             <a
-//                               href={`mailto:${vendor.email}`}
-//                               className="flex items-center gap-2 text-green-600 hover:text-green-700 font-medium"
-//                             >
-//                               <Mail size={18} />
-//                               <span className="hidden sm:inline">Email</span>
-//                             </a>
-//                           </div>
-//                           <div className="flex items-center gap-4">
-//                             <div className="text-right">
-//                               <p className="text-sm text-gray-600">Starting from</p>
-//                               <p className="text-xl font-bold text-blue-600">{vendor.price}</p>
-//                             </div>
-//                             <button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition-all">
-//                               Book Now
-//                             </button>
-//                           </div>
-//                         </div>
-//                       </div>
-//                     </div>
-//                   </div>
-//                 ))}
-//               </div>
-//             ) : (
-//               <div className="text-center py-20 bg-white rounded-2xl">
-//                 <div className="text-6xl mb-4">🔍</div>
-//                 <h3 className="text-2xl font-bold text-gray-800 mb-2">No vendors found</h3>
-//                 <p className="text-gray-600 mb-6">Try adjusting your filters or search terms</p>
-//                 <button
-//                   onClick={() => {
-//                     setSearchTerm('');
-//                     setSelectedCategory('All');
-//                     setSelectedLocation('All');
-//                   }}
-//                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold"
-//                 >
-//                   Clear All Filters
-//                 </button>
-//               </div>
-//             )}
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Vendors;
-
-
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Search, Filter, Star, MapPin, Phone, Mail, Briefcase, Clock, Shield, TrendingUp, CheckCircle } from 'lucide-react';
+import { 
+  Search, 
+  MapPin, 
+  Phone, 
+  Clock, 
+  DollarSign, 
+  Star, 
+  Award,
+  Wrench,
+  Filter,
+  CheckCircle,
+  TrendingUp,
+  Mail,
+  Shield,
+  Briefcase
+} from 'lucide-react';
 
 const Vendors = () => {
-  const [searchParams] = useSearchParams();
+  const [services, setServices] = useState([]);
+  const [filteredServices, setFilteredServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedLocation, setSelectedLocation] = useState('All');
 
-  // Handle URL parameters
-  useEffect(() => {
-    const categoryParam = searchParams.get('category');
-    const searchParam = searchParams.get('search');
-    
-    if (categoryParam) {
-      setSelectedCategory(categoryParam);
-    }
-    if (searchParam) {
-      setSearchTerm(searchParam);
-    }
-  }, [searchParams]);
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-  // Hardcoded Vendors Data (Replace with API call later)
-  const vendors = [
-    {
-      id: 1,
-      name: 'Ali Raza',
-      category: 'Plumbing',
-      location: 'Gulshan-e-Iqbal',
-      city: 'Karachi',
-      rating: 4.8,
-      reviews: 156,
-      experience: '5 years',
-      phone: '+92-300-1234567',
-      email: 'ali.raza@fixkar.com',
-      price: 'Rs. 500-1500',
-      image: '👨‍🔧',
-      available: true,
-      completedJobs: 234,
-      verified: true,
-      description: 'Expert in all types of plumbing work including pipe fitting, leak repairs, and bathroom installations.',
-      services: ['Pipe Fitting', 'Leak Repair', 'Bathroom Installation', 'Water Tank Cleaning']
-    },
-    {
-      id: 2,
-      name: 'Ahmed Khan',
-      category: 'Electrical',
-      location: 'Defence',
-      city: 'Karachi',
-      rating: 4.9,
-      reviews: 203,
-      experience: '7 years',
-      phone: '+92-301-2345678',
-      email: 'ahmed.khan@fixkar.com',
-      price: 'Rs. 600-2000',
-      image: '⚡',
-      available: true,
-      completedJobs: 312,
-      verified: true,
-      description: 'Licensed electrician specializing in residential and commercial electrical work.',
-      services: ['Wiring', 'Circuit Breaker', 'Fan Installation', 'Light Fixtures']
-    },
-    {
-      id: 3,
-      name: 'Hassan Ali',
-      category: 'Car Mechanic',
-      location: 'Clifton',
-      city: 'Karachi',
-      rating: 4.7,
-      reviews: 134,
-      experience: '4 years',
-      phone: '+92-302-3456789',
-      email: 'hassan.ali@fixkar.com',
-      price: 'Rs. 800-2500',
-      image: '🔧',
-      available: false,
-      completedJobs: 178,
-      verified: true,
-      description: 'Professional car mechanic with expertise in all major car brands.',
-      services: ['Engine Repair', 'Oil Change', 'Brake Service', 'AC Repair']
-    },
-    {
-      id: 4,
-      name: 'Bilal Ahmed',
-      category: 'Carpentry',
-      location: 'North Nazimabad',
-      city: 'Karachi',
-      rating: 4.6,
-      reviews: 98,
-      experience: '6 years',
-      phone: '+92-303-4567890',
-      email: 'bilal.ahmed@fixkar.com',
-      price: 'Rs. 700-2200',
-      image: '🪚',
-      available: true,
-      completedJobs: 145,
-      verified: true,
-      description: 'Skilled carpenter for custom furniture, kitchen cabinets, and wooden fixtures.',
-      services: ['Furniture Making', 'Cabinet Installation', 'Door Repair', 'Wood Flooring']
-    },
-    {
-      id: 5,
-      name: 'Imran Malik',
-      category: 'Painting',
-      location: 'Malir',
-      city: 'Karachi',
-      rating: 4.5,
-      reviews: 87,
-      experience: '3 years',
-      phone: '+92-304-5678901',
-      email: 'imran.malik@fixkar.com',
-      price: 'Rs. 400-1800',
-      image: '🎨',
-      available: true,
-      completedJobs: 112,
-      verified: true,
-      description: 'Professional painter for interior and exterior painting services.',
-      services: ['Interior Painting', 'Exterior Painting', 'Wall Textures', 'Color Consultation']
-    },
-    {
-      id: 6,
-      name: 'Farhan Shah',
-      category: 'AC Repair',
-      location: 'Saddar',
-      city: 'Karachi',
-      rating: 4.9,
-      reviews: 221,
-      experience: '8 years',
-      phone: '+92-305-6789012',
-      email: 'farhan.shah@fixkar.com',
-      price: 'Rs. 900-3000',
-      image: '❄️',
-      available: true,
-      completedJobs: 289,
-      verified: true,
-      description: 'AC expert for installation, repair, and maintenance of all AC brands.',
-      services: ['AC Installation', 'AC Repair', 'Gas Refilling', 'Maintenance']
-    },
-    {
-      id: 7,
-      name: 'Usman Ali',
-      category: 'Plumbing',
-      location: 'Korangi',
-      city: 'Karachi',
-      rating: 4.4,
-      reviews: 76,
-      experience: '4 years',
-      phone: '+92-306-7890123',
-      email: 'usman.ali@fixkar.com',
-      price: 'Rs. 450-1400',
-      image: '👨‍🔧',
-      available: true,
-      completedJobs: 98,
-      verified: true,
-      description: 'Reliable plumber for emergency and routine plumbing services.',
-      services: ['Emergency Repairs', 'Drain Cleaning', 'Fixture Installation', 'Water Heater']
-    },
-    {
-      id: 8,
-      name: 'Zain Abbas',
-      category: 'Electrical',
-      location: 'Gulistan-e-Jauhar',
-      city: 'Karachi',
-      rating: 4.7,
-      reviews: 142,
-      experience: '5 years',
-      phone: '+92-307-8901234',
-      email: 'zain.abbas@fixkar.com',
-      price: 'Rs. 550-1900',
-      image: '⚡',
-      available: true,
-      completedJobs: 187,
-      verified: true,
-      description: 'Certified electrician for home and office electrical solutions.',
-      services: ['Panel Upgrades', 'Smart Home Setup', 'Generator Installation', 'Emergency Service']
-    },
-    {
-      id: 9,
-      name: 'Rashid Khan',
-      category: 'Mobile Repair',
-      location: 'Saddar',
-      city: 'Karachi',
-      rating: 4.8,
-      reviews: 167,
-      experience: '6 years',
-      phone: '+92-308-9012345',
-      email: 'rashid.khan@fixkar.com',
-      price: 'Rs. 300-1200',
-      image: '📱',
-      available: true,
-      completedJobs: 215,
-      verified: true,
-      description: 'Expert mobile phone repair technician for all brands and models.',
-      services: ['Screen Replacement', 'Battery Change', 'Software Issues', 'Water Damage']
-    },
-    {
-      id: 10,
-      name: 'Saeed Ahmad',
-      category: 'Home Cleaning',
-      location: 'Defence',
-      city: 'Karachi',
-      rating: 4.6,
-      reviews: 192,
-      experience: '5 years',
-      phone: '+92-309-0123456',
-      email: 'saeed.ahmad@fixkar.com',
-      price: 'Rs. 1000-3000',
-      image: '🏠',
-      available: true,
-      completedJobs: 256,
-      verified: true,
-      description: 'Professional home cleaning services with eco-friendly products.',
-      services: ['Deep Cleaning', 'Regular Cleaning', 'Move-in/out Cleaning', 'Sanitization']
-    }
+  // Karachi areas list
+  const karachiAreas = [
+    'All',
+    'Clifton',
+    'Defence (DHA)',
+    'Gulshan-e-Iqbal',
+    'North Nazimabad',
+    'Nazimabad',
+    'FB Area',
+    'Saddar',
+    'Buffer Zone',
+    'Bahadurabad',
+    'Numaish',
+    'New Karachi',
+    'North Karachi',
+    'Malir',
+    'Korangi',
+    'Landhi',
+    'Gulistan-e-Jauhar',
+    'Scheme 33',
+    'Surjani Town',
+    'North Karachi',
+    'Tariq Road',
+    'PECHS',
+    'Shahrah-e-Faisal',
+    'Soldier Bazaar',
+    'Garden',
+    'Liaquatabad',
+    'Orangi Town',
+    'Baldia Town',
+    'SITE Area',
+    'Kemari',
+    'Lyari',
+    'Jamshed Town',
+    'Gulberg',
+    'Johar',
+    'Shah Faisal Colony',
+    'Model Colony',
+    'Khayaban-e-Ittehad',
+    'Khayaban-e-Seher',
+    'Khayaban-e-Shahbaz',
+    'Khayaban-e-Bukhari',
+    'Khayaban-e-Rahat',
+    'Khayaban-e-Jami',
+    'Khayaban-e-Mujahid',
+    'Pakistan Chowk',
+    'Shahra-e-Pakistan',
+    'Shahra-e-Quaideen',
   ];
 
   const categories = [
@@ -672,57 +86,123 @@ const Vendors = () => {
     { name: 'Painting', icon: '🎨' },
     { name: 'AC Repair', icon: '❄️' },
     { name: 'Mobile Repair', icon: '📱' },
-    { name: 'Home Cleaning', icon: '🏠' }
+    { name: 'Home Cleaning', icon: '🧹' }
   ];
 
-  const locations = [
-    'All',
-    'Gulshan-e-Iqbal',
-    'Defence',
-    'Clifton',
-    'North Nazimabad',
-    'Malir',
-    'Saddar',
-    'Korangi',
-    'Gulistan-e-Jauhar'
-  ];
+  useEffect(() => {
+    fetchApprovedServices();
+  }, []);
 
-  // Filter vendors
-  const filteredVendors = vendors.filter(vendor => {
-    const matchesSearch = vendor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         vendor.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         vendor.location.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'All' || vendor.category === selectedCategory;
-    const matchesLocation = selectedLocation === 'All' || vendor.location === selectedLocation;
-    
-    return matchesSearch && matchesCategory && matchesLocation;
-  });
+  useEffect(() => {
+    filterServices();
+  }, [searchTerm, selectedCategory, selectedLocation, services]);
+
+  const fetchApprovedServices = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_BASE_URL}/admin/services/approved`);
+      const data = await response.json();
+      
+      if (response.ok) {
+        setServices(data);
+        setFilteredServices(data);
+      } else {
+        setError('Failed to fetch services');
+      }
+      setLoading(false);
+    } catch (err) {
+      setError('Failed to connect to server');
+      setLoading(false);
+    }
+  };
+
+  const filterServices = () => {
+    let filtered = [...services];
+
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter(service => 
+        service.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        service.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        service.vendorId?.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Filter by category
+    if (selectedCategory !== 'All') {
+      filtered = filtered.filter(service => service.category === selectedCategory);
+    }
+
+    // Filter by location
+    if (selectedLocation !== 'All') {
+      filtered = filtered.filter(service => 
+        service.location.toLowerCase().includes(selectedLocation.toLowerCase())
+      );
+    }
+
+    setFilteredServices(filtered);
+  };
+
+  const getCategoryIcon = (category) => {
+    const icons = {
+      'Plumbing': '🔧',
+      'Electrical': '⚡',
+      'Car Mechanic': '🚗',
+      'Carpentry': '🪚',
+      'Painting': '🎨',
+      'AC Repair': '❄️',
+      'Mobile Repair': '📱',
+      'Home Cleaning': '🧹'
+    };
+    return icons[category] || '🔧';
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 text-lg">Loading services...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-b-3xl py-16">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Find Your Perfect Service Provider
-            </h1>
-            <p className="text-xl text-blue-100">
-              Browse through {vendors.length} verified professionals in Karachi
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
+                <Wrench className="text-white" size={40} />
+              </div>
+            </div>
+            <h1 className="text-5xl font-bold text-white mb-3">Find Expert Vendors</h1>
+            <p className="text-blue-100 text-lg max-w-2xl mx-auto">
+              Browse verified professionals for all your home service needs
             </p>
+            <div className="flex items-center justify-center gap-2 mt-4">
+              <CheckCircle className="text-green-300" size={20} />
+              <span className="text-blue-100 font-semibold">
+                {filteredServices.length} Verified Professionals Available
+              </span>
+            </div>
           </div>
 
-          {/* Search Bar */}
           <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-2xl p-2 flex gap-2">
-              <div className="flex-1 relative">
+            <div className="bg-white rounded-2xl shadow-2xl p-2">
+              <div className="relative">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                 <input
                   type="text"
-                  placeholder="Search by name, category, or location..."
+                  placeholder="Search by service, location, or vendor name..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 text-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
@@ -731,9 +211,15 @@ const Vendors = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {error && (
+          <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
+            {error}
+          </div>
+        )}
+
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Filters Sidebar */}
-          <div className="lg:w-64 flex-shrink-0">
+          {/* Sidebar Filters */}
+          <div className="lg:w-72 flex-shrink-0">
             <div className="bg-white rounded-2xl p-6 shadow-lg sticky top-4">
               <div className="flex items-center gap-2 mb-6">
                 <Filter className="text-blue-600" size={24} />
@@ -742,8 +228,11 @@ const Vendors = () => {
 
               {/* Category Filter */}
               <div className="mb-6">
-                <h3 className="font-semibold text-gray-900 mb-3">Category</h3>
-                <div className="space-y-2">
+                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <Wrench size={18} className="text-blue-600" />
+                  Category
+                </h3>
+                <div className="space-y-2 max-h-64 overflow-y-auto">
                   {categories.map(cat => (
                     <button
                       key={cat.name}
@@ -763,157 +252,179 @@ const Vendors = () => {
 
               {/* Location Filter */}
               <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Location</h3>
+                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <MapPin size={18} className="text-red-600" />
+                  Location (Karachi)
+                </h3>
                 <select
                   value={selectedLocation}
                   onChange={(e) => setSelectedLocation(e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
-                  {locations.map(loc => (
-                    <option key={loc} value={loc}>{loc}</option>
+                  {karachiAreas.map(area => (
+                    <option key={area} value={area}>{area}</option>
                   ))}
                 </select>
               </div>
 
               {/* Clear Filters */}
-              {(selectedCategory !== 'All' || selectedLocation !== 'All') && (
+              {(selectedCategory !== 'All' || selectedLocation !== 'All' || searchTerm) && (
                 <button
                   onClick={() => {
+                    setSearchTerm('');
                     setSelectedCategory('All');
                     setSelectedLocation('All');
                   }}
-                  className="w-full mt-4 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+                  className="w-full mt-6 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg transition-all font-semibold shadow-lg"
                 >
-                  Clear Filters
+                  Clear All Filters
                 </button>
               )}
             </div>
           </div>
 
-          {/* Vendors Grid */}
+          {/* Main Content */}
           <div className="flex-1">
-            {/* Results Header */}
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">
-                  {filteredVendors.length} Professional{filteredVendors.length !== 1 ? 's' : ''} Found
-                </h2>
-                <p className="text-gray-600">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">
+                {filteredServices.length} {filteredServices.length === 1 ? 'Service' : 'Services'} Found
+              </h2>
+              {(selectedCategory !== 'All' || selectedLocation !== 'All') && (
+                <p className="text-gray-600 mt-1">
                   {selectedCategory !== 'All' && `Category: ${selectedCategory}`}
-                  {selectedLocation !== 'All' && ` • Location: ${selectedLocation}`}
+                  {selectedLocation !== 'All' && selectedCategory !== 'All' && ' • '}
+                  {selectedLocation !== 'All' && `Location: ${selectedLocation}`}
                 </p>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <TrendingUp size={16} className="text-blue-600" />
-                <span>Sorted by rating</span>
-              </div>
+              )}
             </div>
 
-            {/* Vendors List */}
-            {filteredVendors.length > 0 ? (
-              <div className="space-y-6">
-                {filteredVendors.map(vendor => (
+            {/* Services Grid */}
+            {filteredServices.length === 0 ? (
+              <div className="bg-white rounded-2xl shadow-lg p-12 text-center border-2 border-dashed border-gray-300">
+                <div className="bg-gray-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="text-gray-400" size={40} />
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">No Services Found</h3>
+                <p className="text-gray-600 mb-6">Try adjusting your search filters</p>
+                <button
+                  onClick={() => {
+                    setSearchTerm('');
+                    setSelectedCategory('All');
+                    setSelectedLocation('All');
+                  }}
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all"
+                >
+                  Clear All Filters
+                </button>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-1 gap-6">
+                {filteredServices.map((service) => (
                   <div
-                    key={vendor.id}
-                    className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all border-2 border-gray-100 hover:border-blue-300"
+                    key={service._id}
+                    className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 group hover:scale-[1.02]"
                   >
-                    <div className="flex flex-col md:flex-row gap-6">
-                      {/* Vendor Image/Icon */}
+                    <div className="flex flex-col md:flex-row gap-6 p-6">
+                      {/* Service Icon & Status */}
                       <div className="flex-shrink-0">
-                        <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center text-5xl shadow-lg">
-                          {vendor.image}
+                        <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-5xl shadow-lg">
+                          {getCategoryIcon(service.category)}
                         </div>
-                        {vendor.available ? (
-                          <div className="mt-3 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold text-center">
-                            Available Now
-                          </div>
-                        ) : (
-                          <div className="mt-3 bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold text-center">
-                            Busy
-                          </div>
-                        )}
+                        <div className="mt-3 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold text-center flex items-center justify-center gap-1">
+                          <CheckCircle size={12} />
+                          Verified
+                        </div>
                       </div>
 
-                      {/* Vendor Details */}
+                      {/* Service Details */}
                       <div className="flex-1">
                         <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-3">
                           <div>
                             <div className="flex items-center gap-2 mb-2">
-                              <h3 className="text-2xl font-bold text-gray-900">{vendor.name}</h3>
-                              {vendor.verified && (
-                                <div className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full flex items-center gap-1 text-xs">
-                                  <Shield size={12} />
-                                  <span>Verified</span>
-                                </div>
-                              )}
+                              <h3 className="text-2xl font-bold text-gray-900">{service.vendorId?.name}</h3>
+                              <div className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full flex items-center gap-1 text-xs">
+                                <Shield size={12} />
+                                <span>Verified</span>
+                              </div>
                             </div>
-                            <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
+                            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-2">
                               <span className="flex items-center gap-1">
                                 <Briefcase size={16} className="text-blue-600" />
-                                {vendor.category}
+                                {service.category}
                               </span>
                               <span className="flex items-center gap-1">
                                 <MapPin size={16} className="text-red-600" />
-                                {vendor.location}, {vendor.city}
+                                {service.location}
                               </span>
-                              <span className="flex items-center gap-1">
-                                <Clock size={16} className="text-green-600" />
-                                {vendor.experience}
-                              </span>
+                              {service.experience && (
+                                <span className="flex items-center gap-1">
+                                  <Award size={16} className="text-orange-600" />
+                                  {service.experience}
+                                </span>
+                              )}
                             </div>
                           </div>
-                          <div className="text-right">
+                          <div className="text-right mt-2 md:mt-0">
                             <div className="flex items-center gap-1 mb-1">
                               <Star className="text-yellow-500 fill-yellow-500" size={20} />
-                              <span className="text-xl font-bold text-gray-900">{vendor.rating}</span>
-                              <span className="text-sm text-gray-600">({vendor.reviews} reviews)</span>
-                            </div>
-                            <div className="text-sm text-gray-600">
-                              <CheckCircle size={14} className="inline text-green-600" /> {vendor.completedJobs} jobs completed
+                              <span className="text-xl font-bold text-gray-900">4.8</span>
+                              <span className="text-sm text-gray-600">(50+)</span>
                             </div>
                           </div>
                         </div>
 
-                        <p className="text-gray-700 mb-4">{vendor.description}</p>
+                        {/* Description */}
+                        {service.description && (
+                          <div className="bg-gray-50 rounded-xl p-4 mb-4 border border-gray-200">
+                            <p className="text-sm text-gray-700 leading-relaxed">
+                              {service.description}
+                            </p>
+                          </div>
+                        )}
 
-                        {/* Services Tags */}
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {vendor.services.map((service, idx) => (
-                            <span
-                              key={idx}
-                              className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium"
-                            >
-                              {service}
-                            </span>
-                          ))}
+                        {/* Availability & Contact */}
+                        <div className="grid md:grid-cols-2 gap-4 mb-4">
+                          <div className="flex items-start gap-3">
+                            <div className="bg-purple-50 p-2 rounded-lg">
+                              <Clock className="text-purple-600" size={18} />
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-600 font-semibold mb-1">Availability</p>
+                              <p className="text-sm font-bold text-gray-800">{service.availability}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-3">
+                            <div className="bg-green-50 p-2 rounded-lg">
+                              <Phone className="text-green-600" size={18} />
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-600 font-semibold mb-1">Contact</p>
+                              <p className="text-sm font-bold text-gray-800">{service.contact}</p>
+                            </div>
+                          </div>
                         </div>
 
-                        {/* Contact & Price */}
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 border-t border-gray-200">
-                          <div className="flex gap-4">
-                            <a
-                              href={`tel:${vendor.phone}`}
-                              className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
-                            >
-                              <Phone size={18} />
-                              <span className="hidden sm:inline">{vendor.phone}</span>
-                            </a>
-                            <a
-                              href={`mailto:${vendor.email}`}
-                              className="flex items-center gap-2 text-green-600 hover:text-green-700 font-medium"
-                            >
-                              <Mail size={18} />
-                              <span className="hidden sm:inline">Email</span>
-                            </a>
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <div className="text-right">
-                              <p className="text-sm text-gray-600">Starting from</p>
-                              <p className="text-xl font-bold text-blue-600">{vendor.price}</p>
+                        {/* Price & Action */}
+                        <div className="pt-4 border-t border-gray-200">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div className="flex items-center gap-4">
+                              <div className="flex items-center gap-2">
+                                <DollarSign className="text-green-600" size={20} />
+                                <div>
+                                  <p className="text-xs text-gray-600">Price Range</p>
+                                  <p className="text-lg font-bold text-green-600">Rs. {service.price}</p>
+                                </div>
+                              </div>
                             </div>
-                            <button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition-all">
-                              Book Now
-                            </button>
+                            <div className="flex gap-2">
+                              <a
+                                href={`tel:${service.contact}`}
+                                className="flex-1 sm:flex-none bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                              >
+                                <Phone size={18} />
+                                Contact Now
+                              </a>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -921,21 +432,26 @@ const Vendors = () => {
                   </div>
                 ))}
               </div>
-            ) : (
-              <div className="text-center py-20 bg-white rounded-2xl">
-                <div className="text-6xl mb-4">🔍</div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">No vendors found</h3>
-                <p className="text-gray-600 mb-6">Try adjusting your filters or search terms</p>
-                <button
-                  onClick={() => {
-                    setSearchTerm('');
-                    setSelectedCategory('All');
-                    setSelectedLocation('All');
-                  }}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold"
-                >
-                  Clear All Filters
-                </button>
+            )}
+
+            {/* Stats Footer */}
+            {filteredServices.length > 0 && (
+              <div className="mt-12 grid md:grid-cols-3 gap-6">
+                <div className="bg-white rounded-2xl shadow-lg p-6 text-center border-l-4 border-blue-500">
+                  <TrendingUp className="text-blue-600 mx-auto mb-3" size={32} />
+                  <p className="text-3xl font-bold text-gray-800 mb-1">{services.length}+</p>
+                  <p className="text-gray-600 font-semibold">Verified Vendors</p>
+                </div>
+                <div className="bg-white rounded-2xl shadow-lg p-6 text-center border-l-4 border-green-500">
+                  <Star className="text-yellow-500 fill-yellow-500 mx-auto mb-3" size={32} />
+                  <p className="text-3xl font-bold text-gray-800 mb-1">4.8+</p>
+                  <p className="text-gray-600 font-semibold">Average Rating</p>
+                </div>
+                <div className="bg-white rounded-2xl shadow-lg p-6 text-center border-l-4 border-purple-500">
+                  <CheckCircle className="text-green-600 mx-auto mb-3" size={32} />
+                  <p className="text-3xl font-bold text-gray-800 mb-1">100%</p>
+                  <p className="text-gray-600 font-semibold">Verified Services</p>
+                </div>
               </div>
             )}
           </div>

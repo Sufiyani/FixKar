@@ -1,5 +1,3 @@
-// src/utils/api.js
-
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 // Helper function to get auth headers
@@ -14,11 +12,9 @@ const getAuthHeaders = () => {
 // Helper function to handle API responses
 const handleResponse = async (response) => {
   const data = await response.json();
-  
   if (!response.ok) {
     throw new Error(data.message || "Something went wrong");
   }
-  
   return data;
 };
 
@@ -38,6 +34,45 @@ export const adminAPI = {
     const response = await fetch(`${API_BASE_URL}/admin/refresh`, {
       method: "POST",
       credentials: "include",
+    });
+    return handleResponse(response);
+  },
+
+  getPendingServices: async () => {
+    const response = await fetch(`${API_BASE_URL}/admin/services/pending`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
+  },
+
+  approveService: async (serviceId) => {
+    const response = await fetch(`${API_BASE_URL}/admin/services/${serviceId}/approve`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
+  },
+
+  disapproveService: async (serviceId) => {
+    const response = await fetch(`${API_BASE_URL}/admin/services/${serviceId}/disapprove`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
+  },
+
+  getApprovedServices: async () => {
+    const response = await fetch(`${API_BASE_URL}/admin/services/approved`, {
+      method: "GET",
+    });
+    return handleResponse(response);
+  },
+
+  getStats: async () => {
+    const response = await fetch(`${API_BASE_URL}/admin/stats`, {
+      method: "GET",
+      headers: getAuthHeaders(),
     });
     return handleResponse(response);
   },
@@ -63,7 +98,6 @@ export const vendorAPI = {
     return handleResponse(response);
   },
 
-  // Add more vendor endpoints as needed
   getProfile: async () => {
     const response = await fetch(`${API_BASE_URL}/vendors/profile`, {
       method: "GET",
@@ -82,4 +116,59 @@ export const vendorAPI = {
   },
 };
 
-export default { adminAPI, vendorAPI };
+// Service APIs
+export const serviceAPI = {
+  createService: async (serviceData) => {
+    const response = await fetch(`${API_BASE_URL}/vendors/services`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(serviceData),
+    });
+    return handleResponse(response);
+  },
+
+  getVendorServices: async () => {
+    const response = await fetch(`${API_BASE_URL}/vendors/services`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
+  },
+
+  deleteService: async (serviceId) => {
+    const response = await fetch(`${API_BASE_URL}/vendors/services/${serviceId}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
+  },
+
+  getVendorStats: async () => {
+    const response = await fetch(`${API_BASE_URL}/vendors/stats`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
+  },
+
+  getVendorProfile: async () => {
+    const response = await fetch(`${API_BASE_URL}/vendors/profile`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
+  },
+};
+
+// Helper functions for the vendor dashboard
+export const createService = serviceAPI.createService;
+export const getVendorServices = serviceAPI.getVendorServices;
+export const deleteService = serviceAPI.deleteService;
+export const getVendorStats = serviceAPI.getVendorStats;
+export const getVendorProfile = serviceAPI.getVendorProfile;
+
+export default {
+  adminAPI,
+  vendorAPI,
+  serviceAPI,
+};

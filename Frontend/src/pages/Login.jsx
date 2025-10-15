@@ -1,170 +1,237 @@
-import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { Lock, Mail, Eye, EyeOff, User } from "lucide-react";
-import { adminAPI, vendorAPI } from "../utils/api";
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Shield, Lock, User, AlertCircle, Wrench } from 'lucide-react';
 
 const Login = () => {
-  const { type } = useParams(); // vendor or admin
   const navigate = useNavigate();
-
-  const [email, setEmail] = useState("");
-  const [adminName, setAdminName] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPass, setShowPass] = useState(false);
-  const [error, setError] = useState("");
+  const { type } = useParams(); // Get 'admin' or 'vendor' from URL
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: ''
+  });
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e) => {
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+  // Redirect if invalid type
+  useEffect(() => {
+    if (type !== 'admin' && type !== 'vendor') {
+      navigate('/');
+    }
+  }, [type, navigate]);
+
+  const isAdmin = type === 'admin';
+  const isVendor = type === 'vendor';
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError('');
     setLoading(true);
 
     try {
-      if (type === "vendor") {
-        // Validation
-        if (!email || !password) {
-          setError("Please fill all fields!");
-          setLoading(false);
-          return;
-        }
+      // Different endpoints for admin vs vendor
+      const endpoint = isAdmin 
+        ? `${API_BASE_URL}/admin/login`
+        : `${API_BASE_URL}/vendors/login`;
 
-        // Vendor Login API Call
-        const data = await vendorAPI.login(email, password);
-        
-        // Store token and user info
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("userType", "vendor");
-        
-        // Navigate to vendor dashboard
-        navigate("/vendor-dashboard");
-        
-      } else if (type === "admin") {
-        // Validation
-        if (!adminName || !password) {
-          setError("Please fill all fields!");
-          setLoading(false);
-          return;
-        }
+      // Different body data for admin (name) vs vendor (email)
+      const bodyData = isAdmin 
+        ? { name: formData.name, password: formData.password }
+        : { email: formData.email, password: formData.password };
 
-        // Admin Login API Call
-        const data = await adminAPI.login(adminName, password);
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(bodyData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('accessToken', data.accessToken);
         
-        // Store token and admin info
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("userType", "admin");
-        localStorage.setItem("adminName", data.name);
-        
-        // Navigate to admin dashboard
-        navigate("/admin-dashboard");
+        if (isAdmin) {
+          localStorage.setItem('adminName', data.name);
+          localStorage.setItem('userType', 'admin');
+          navigate('/admin-dashboard');
+        } else {
+          localStorage.setItem('vendorName', data.name || data.vendor?.name);
+          localStorage.setItem('vendorId', data._id || data.vendor?._id);
+          localStorage.setItem('userType', 'vendor');
+          navigate('/vendor-dashboard');
+        }
+      } else {
+        setError(data.message || 'Login failed');
       }
     } catch (err) {
-      console.error("Login error:", err);
-      setError(err.message || "Network error. Please check if the server is running.");
+      setError('Failed to connect to server');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 px-4 py-12">
-      <div className="w-full max-w-md bg-white/80 backdrop-blur-xl border border-blue-100 shadow-2xl rounded-2xl p-8">
-        <h2 className="text-3xl font-bold text-center text-blue-700 mb-8 tracking-wide">
-          {type === "admin" ? "Admin Login" : "Vendor Login"}
-        </h2>
-
-        <form onSubmit={handleLogin} className="space-y-5">
-          {/* Vendor Email Input */}
-          {type === "vendor" && (
-            <div>
-              <label className="block mb-1 font-semibold text-gray-700">
-                Email
-              </label>
-              <div className="relative">
-                <Mail className="absolute top-3 left-3 text-blue-400" size={18} />
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  disabled={loading}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Admin Name Input */}
-          {type === "admin" && (
-            <div>
-              <label className="block mb-1 font-semibold text-gray-700">
-                Name
-              </label>
-              <div className="relative">
-                <User className="absolute top-3 left-3 text-blue-400" size={18} />
-                <input
-                  type="text"
-                  placeholder="Enter admin name"
-                  value={adminName}
-                  onChange={(e) => setAdminName(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  disabled={loading}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Password Input */}
-          <div>
-            <label className="block mb-1 font-semibold text-gray-700">
-              Password
-            </label>
-            <div className="relative">
-              <Lock className="absolute top-3 left-3 text-blue-400" size={18} />
-              <input
-                type={showPass ? "text" : "password"}
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-10 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                disabled={loading}
-              />
-              <div
-                className="absolute right-3 top-3 text-blue-400 cursor-pointer"
-                onClick={() => setShowPass(!showPass)}
-              >
-                {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
-              </div>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center p-4">
+      <div className="max-w-md w-full">
+        {/* Logo/Header */}
+        <div className="text-center mb-8">
+          <div className={`${
+            isAdmin 
+              ? 'bg-gradient-to-r from-blue-600 to-indigo-600' 
+              : 'bg-gradient-to-r from-green-600 to-emerald-600'
+          } w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl`}>
+            {isAdmin ? (
+              <Shield className="text-white" size={40} />
+            ) : (
+              <Wrench className="text-white" size={40} />
+            )}
           </div>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            {isAdmin ? 'Admin Login' : 'Vendor Login'}
+          </h1>
+          <p className="text-gray-600">
+            {isAdmin 
+              ? 'Sign in to manage FixKar platform' 
+              : 'Sign in to manage your services'}
+          </p>
+        </div>
 
-          {/* Error message */}
+        {/* Login Form */}
+        <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
           {error && (
-            <p className="text-red-500 text-sm font-medium text-center">
+            <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl flex items-center gap-2">
+              <AlertCircle size={20} />
               {error}
-            </p>
+            </div>
           )}
 
-          {/* Login button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow-md transition-all duration-200 disabled:bg-blue-400 disabled:cursor-not-allowed"
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Admin uses 'name', Vendor uses 'email' */}
+            {isAdmin ? (
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Admin Name
+                </label>
+                <div className="relative">
+                  <User
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={20}
+                  />
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
+                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    placeholder="Enter admin name"
+                    required
+                  />
+                </div>
+              </div>
+            ) : (
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <User
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={20}
+                  />
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+              </div>
+            )}
 
-        {/* Vendor register link */}
-        {type === "vendor" && (
-          <p className="text-sm text-center mt-5 text-gray-700">
-            Don't have an account?{" "}
-            <span
-              className="text-blue-600 font-semibold cursor-pointer hover:underline"
-              onClick={() => navigate("/register")}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <Lock
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={20}
+                />
+                <input
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                  className={`w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 ${
+                    isAdmin ? 'focus:ring-blue-500' : 'focus:ring-green-500'
+                  } focus:border-transparent transition-all`}
+                  placeholder="Enter password"
+                  required
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full ${
+                isAdmin
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'
+                  : 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700'
+              } text-white py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2`}
             >
-              Register Here
-            </span>
-          </p>
+              {loading ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  Signing in...
+                </>
+              ) : (
+                <>
+                  {isAdmin ? <Shield size={20} /> : <Wrench size={20} />}
+                  Sign In as {isAdmin ? 'Admin' : 'Vendor'}
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center space-y-3">
+            {isVendor && (
+              <p className="text-gray-600 text-sm">
+                Don't have an account?{' '}
+                <button
+                  onClick={() => navigate('/register')}
+                  className="text-green-600 hover:text-green-700 font-semibold"
+                >
+                  Register as Vendor
+                </button>
+              </p>
+            )}
+            <button
+              onClick={() => navigate('/')}
+              className={`${
+                isAdmin ? 'text-blue-600 hover:text-blue-700' : 'text-green-600 hover:text-green-700'
+              } font-semibold text-sm`}
+            >
+              ← Back to Home
+            </button>
+          </div>
+        </div>
+
+        {isAdmin && (
+          <div className="mt-6 text-center text-sm text-gray-600">
+            <p>Default credentials: admin / [set in .env]</p>
+          </div>
         )}
       </div>
     </div>

@@ -9,6 +9,11 @@ const vendorSchema = mongoose.Schema(
     category: String,
     location: String,
     password: String,
+    status: {
+      type: String,
+      enum: ["Pending", "Approved", "Disapproved"],
+      default: "Pending",
+    },
   },
   { timestamps: true }
 );
@@ -25,5 +30,4 @@ vendorSchema.methods.matchPassword = async function (enteredPassword) {
 };
 
 const Vendor = mongoose.model("Vendor", vendorSchema);
-
 export default Vendor;

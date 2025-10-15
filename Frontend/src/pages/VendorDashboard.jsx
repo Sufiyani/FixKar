@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   PlusCircle, 
   MapPin, 
@@ -14,12 +14,19 @@ import {
   CheckCircle,
   Edit2,
   Trash2,
-  Image as ImageIcon,
-  Save
+  Save,
+  AlertCircle,
+  XCircle
 } from "lucide-react";
 
 const VendorDashboard = () => {
   const [services, setServices] = useState([]);
+  const [stats, setStats] = useState({
+    totalBookings: 0,
+    rating: 4.8,
+    earnings: 0,
+    activeServices: 0
+  });
   const [showAddForm, setShowAddForm] = useState(false);
   const [newService, setNewService] = useState({
     category: "",
@@ -30,14 +37,157 @@ const VendorDashboard = () => {
     experience: "",
     description: ""
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  // Mock stats for the vendor
-  const stats = {
-    totalBookings: 45,
-    rating: 4.8,
-    earnings: 54000,
-    activeServices: services.length
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+  useEffect(() => {
+    fetchVendorData();
+  }, []);
+
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('accessToken');
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
   };
+
+  const fetchVendorData = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch vendor services
+      const servicesRes = await fetch(`${API_BASE_URL}/vendors/services`, {
+        headers: getAuthHeaders()
+      });
+      const servicesData = await servicesRes.json();
+      
+      // Fetch vendor stats
+      const statsRes = await fetch(`${API_BASE_URL}/vendors/stats`, {
+        headers: getAuthHeaders()
+      });
+      const statsData = await statsRes.json();
+      
+      setServices(servicesData);
+      setStats(statsData);
+      setLoading(false);
+    } catch (err) {
+      setError('Failed to fetch data');
+      setLoading(false);
+    }
+  };
+
+  const handleAddService = async () => {
+    if (!newService.category || !newService.location || !newService.contact || !newService.availability) {
+      setError('Please fill in all required fields');
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      setError('');
+      setSuccess('');
+
+      const response = await fetch(`${API_BASE_URL}/vendors/services`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(newService)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccess('Service submitted successfully! Waiting for admin approval.');
+        setServices([...services, data.service]);
+        setNewService({
+          category: "",
+          location: "",
+          contact: "",
+          availability: "",
+          price: "",
+          experience: "",
+          description: ""
+        });
+        setShowAddForm(false);
+        
+        // Refresh data
+        setTimeout(() => {
+          fetchVendorData();
+          setSuccess('');
+        }, 2000);
+      } else {
+        setError(data.message || 'Failed to create service');
+      }
+    } catch (err) {
+      setError('Failed to create service');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDeleteService = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this service?')) {
+      return;
+    }
+
+    try {
+      setError('');
+      setSuccess('');
+
+      const response = await fetch(`${API_BASE_URL}/vendors/services/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccess('Service deleted successfully');
+        setServices(services.filter(s => s._id !== id));
+        setTimeout(() => setSuccess(''), 2000);
+      } else {
+        setError(data.message || 'Failed to delete service');
+      }
+    } catch (err) {
+      setError('Failed to delete service');
+    }
+  };
+
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case 'Approved':
+        return <span className="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-1">
+          <CheckCircle size={16} /> Approved
+        </span>;
+      case 'Pending':
+        return <span className="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-1">
+          <Clock size={16} /> Pending Approval
+        </span>;
+      case 'Disapproved':
+        return <span className="bg-red-100 text-red-700 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-1">
+          <XCircle size={16} /> Disapproved
+        </span>;
+      default:
+        return <span className="bg-gray-100 text-gray-700 px-4 py-2 rounded-full text-sm font-bold">
+          {status}
+        </span>;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 text-lg">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   const recentBookings = [
     { id: 1, customer: "Hassan Malik", service: "Plumbing", date: "2025-10-10", status: "completed", amount: 1200 },
@@ -45,24 +195,29 @@ const VendorDashboard = () => {
     { id: 3, customer: "Ali Ahmed", service: "Installation", date: "2025-10-12", status: "in-progress", amount: 2000 },
   ];
 
-  const handleAddService = () => {
-    if (newService.category && newService.location && newService.contact && newService.availability) {
-      setServices([...services, { ...newService, id: Date.now() }]);
-      setNewService({ category: "", location: "", contact: "", availability: "", price: "", experience: "", description: "" });
-      setShowAddForm(false);
-    }
-  };
-
-  const handleDeleteService = (id) => {
-    setServices(services.filter(s => s.id !== id));
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        
+        {/* Alert Messages */}
+        {error && (
+          <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl flex items-center gap-2">
+            <AlertCircle size={20} />
+            {error}
+            <button onClick={() => setError('')} className="ml-auto">×</button>
+          </div>
+        )}
+        
+        {success && (
+          <div className="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl flex items-center gap-2">
+            <CheckCircle size={20} />
+            {success}
+            <button onClick={() => setSuccess('')} className="ml-auto">×</button>
+          </div>
+        )}
+
         {/* Welcome Banner */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-3xl p-8 mb-8 shadow-2xl">
+        <div className="relative overflow-hidden bg-gradient-to-br from-green-600 via-emerald-600 to-teal-700 rounded-3xl p-8 mb-8 shadow-2xl">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
           
           <div className="relative flex flex-col md:flex-row items-center justify-between">
@@ -73,11 +228,11 @@ const VendorDashboard = () => {
                 </div>
                 Welcome Back, Vendor! 👋
               </h1>
-              <p className="text-blue-100 text-lg">Manage your services and track your performance</p>
+              <p className="text-green-100 text-lg">Manage your services and track your performance</p>
             </div>
             <button
               onClick={() => setShowAddForm(!showAddForm)}
-              className="flex items-center gap-2 bg-white text-blue-600 px-6 py-3 rounded-xl font-bold hover:bg-blue-50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+              className="flex items-center gap-2 bg-white text-green-600 px-6 py-3 rounded-xl font-bold hover:bg-green-50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
             >
               <PlusCircle size={20} />
               Add New Service
@@ -108,7 +263,7 @@ const VendorDashboard = () => {
             </div>
             <p className="text-gray-600 text-sm font-medium mb-1">Rating</p>
             <p className="text-3xl font-bold text-gray-800">{stats.rating}</p>
-            <p className="text-gray-600 text-sm mt-2">Based on {stats.totalBookings} reviews</p>
+            <p className="text-gray-600 text-sm mt-2">Based on {stats.reviews || 0} reviews</p>
           </div>
 
           <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition-all hover:scale-105">
@@ -119,7 +274,7 @@ const VendorDashboard = () => {
               <TrendingUp className="text-green-500" size={20} />
             </div>
             <p className="text-gray-600 text-sm font-medium mb-1">Total Earnings</p>
-            <p className="text-3xl font-bold text-gray-800">Rs. {stats.earnings.toLocaleString()}</p>
+            <p className="text-3xl font-bold text-gray-800">Rs. {stats.earnings?.toLocaleString() || 0}</p>
             <p className="text-green-600 text-sm mt-2 font-semibold">↑ 8% increase</p>
           </div>
 
@@ -132,7 +287,7 @@ const VendorDashboard = () => {
             </div>
             <p className="text-gray-600 text-sm font-medium mb-1">Active Services</p>
             <p className="text-3xl font-bold text-gray-800">{stats.activeServices}</p>
-            <p className="text-gray-600 text-sm mt-2">All services live</p>
+            <p className="text-gray-600 text-sm mt-2">Approved services</p>
           </div>
         </div>
 
@@ -141,14 +296,14 @@ const VendorDashboard = () => {
           <div className="bg-white rounded-2xl shadow-2xl p-8 mb-8 border border-gray-200">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3 rounded-xl">
+                <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-3 rounded-xl">
                   <PlusCircle className="text-white" size={24} />
                 </div>
                 Add New Service
               </h2>
               <button
                 onClick={() => setShowAddForm(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-gray-400 hover:text-gray-600 transition-colors text-2xl"
               >
                 ✕
               </button>
@@ -160,15 +315,17 @@ const VendorDashboard = () => {
                 <select
                   value={newService.category}
                   onChange={(e) => setNewService({ ...newService, category: e.target.value })}
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                 >
                   <option value="">Select Category</option>
-                  <option value="Plumber">Plumber</option>
-                  <option value="Electrician">Electrician</option>
-                  <option value="Mechanic">Mechanic</option>
-                  <option value="Carpenter">Carpenter</option>
-                  <option value="Painter">Painter</option>
-                  <option value="AC Technician">AC Technician</option>
+                  <option value="Plumbing">Plumbing</option>
+                  <option value="Electrical">Electrical</option>
+                  <option value="Car Mechanic">Car Mechanic</option>
+                  <option value="Carpentry">Carpentry</option>
+                  <option value="Painting">Painting</option>
+                  <option value="AC Repair">AC Repair</option>
+                  <option value="Mobile Repair">Mobile Repair</option>
+                  <option value="Home Cleaning">Home Cleaning</option>
                 </select>
               </div>
 
@@ -179,7 +336,7 @@ const VendorDashboard = () => {
                   placeholder="e.g., Karachi, Clifton"
                   value={newService.location}
                   onChange={(e) => setNewService({ ...newService, location: e.target.value })}
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -190,7 +347,7 @@ const VendorDashboard = () => {
                   placeholder="+92-300-1234567"
                   value={newService.contact}
                   onChange={(e) => setNewService({ ...newService, contact: e.target.value })}
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -201,7 +358,7 @@ const VendorDashboard = () => {
                   placeholder="e.g., 5 years"
                   value={newService.experience}
                   onChange={(e) => setNewService({ ...newService, experience: e.target.value })}
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -212,7 +369,7 @@ const VendorDashboard = () => {
                   placeholder="e.g., 9am - 6pm"
                   value={newService.availability}
                   onChange={(e) => setNewService({ ...newService, availability: e.target.value })}
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -223,7 +380,7 @@ const VendorDashboard = () => {
                   placeholder="e.g., 500-1500"
                   value={newService.price}
                   onChange={(e) => setNewService({ ...newService, price: e.target.value })}
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -234,17 +391,27 @@ const VendorDashboard = () => {
                   value={newService.description}
                   onChange={(e) => setNewService({ ...newService, description: e.target.value })}
                   rows="4"
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
 
             <button
               onClick={handleAddService}
-              className="mt-6 w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-4 rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 group"
+              disabled={submitting}
+              className="mt-6 w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-4 rounded-xl font-bold hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Save className="group-hover:scale-110 transition-transform" size={20} />
-              Save Service
+              {submitting ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  Submitting...
+                </>
+              ) : (
+                <>
+                  <Save className="group-hover:scale-110 transition-transform" size={20} />
+                  Save Service
+                </>
+              )}
             </button>
           </div>
         )}
@@ -254,13 +421,13 @@ const VendorDashboard = () => {
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-lg">
+                <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-lg">
                   <Wrench className="text-white" size={24} />
                 </div>
                 Your Services
               </h2>
-              <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-bold text-sm">
-                {services.length} Active
+              <span className="bg-green-100 text-green-700 px-4 py-2 rounded-full font-bold text-sm">
+                {services.length} Total
               </span>
             </div>
 
@@ -273,7 +440,7 @@ const VendorDashboard = () => {
                 <p className="text-gray-600 mb-6">Start by adding your first service to get bookings!</p>
                 <button
                   onClick={() => setShowAddForm(true)}
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all inline-flex items-center gap-2"
+                  className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-xl font-bold hover:from-green-700 hover:to-emerald-700 transition-all inline-flex items-center gap-2"
                 >
                   <PlusCircle size={20} />
                   Add Your First Service
@@ -282,10 +449,10 @@ const VendorDashboard = () => {
             ) : (
               <div className="space-y-6">
                 {services.map((srv) => (
-                  <div key={srv.id} className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all border border-gray-100 group">
+                  <div key={srv._id} className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all border border-gray-100 group">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-4">
-                        <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-4 rounded-xl shadow-lg">
+                        <div className="bg-gradient-to-br from-green-500 to-emerald-600 p-4 rounded-xl shadow-lg">
                           <Wrench className="text-white" size={28} />
                         </div>
                         <div>
@@ -293,12 +460,10 @@ const VendorDashboard = () => {
                           <p className="text-sm text-gray-600">{srv.experience} experience</p>
                         </div>
                       </div>
-                      <div className="flex gap-2">
-                        <button className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors">
-                          <Edit2 size={18} />
-                        </button>
+                      <div className="flex gap-2 items-center">
+                        {getStatusBadge(srv.status)}
                         <button 
-                          onClick={() => handleDeleteService(srv.id)}
+                          onClick={() => handleDeleteService(srv._id)}
                           className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
                         >
                           <Trash2 size={18} />
@@ -342,13 +507,10 @@ const VendorDashboard = () => {
                       </div>
                     )}
 
-                    <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
-                      <span className="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-bold">
-                        ✓ Active
-                      </span>
-                      <button className="text-blue-600 hover:text-blue-700 font-semibold text-sm flex items-center gap-2">
-                        View Analytics →
-                      </button>
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                      <p className="text-xs text-gray-500">
+                        Submitted: {new Date(srv.createdAt).toLocaleString()}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -381,12 +543,12 @@ const VendorDashboard = () => {
                   <p className="text-sm text-gray-600 mb-2">{booking.service}</p>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-500">{booking.date}</span>
-                    <span className="text-blue-600 font-bold">Rs. {booking.amount}</span>
+                    <span className="text-green-600 font-bold">Rs. {booking.amount}</span>
                   </div>
                 </div>
               ))}
 
-              <button className="w-full bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 py-3 rounded-xl font-bold hover:from-blue-200 hover:to-indigo-200 transition-all">
+              <button className="w-full bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 py-3 rounded-xl font-bold hover:from-green-200 hover:to-emerald-200 transition-all">
                 View All Bookings
               </button>
             </div>
