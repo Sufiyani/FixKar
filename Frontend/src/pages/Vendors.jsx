@@ -1,19 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Search, 
-  MapPin, 
-  Phone, 
-  Clock, 
-  DollarSign, 
-  Star, 
-  Award,
-  Wrench,
-  Filter,
-  CheckCircle,
-  TrendingUp,
-  Mail,
-  Shield,
-  Briefcase
+  Search, MapPin, Clock, DollarSign, Star, Award, Wrench, Filter,
+  CheckCircle, TrendingUp, Shield, Briefcase, Wifi, WifiOff, X, Calendar,
+  User, Mail, Phone as PhoneIcon, Home, MessageSquare
 } from 'lucide-react';
 
 const Vendors = () => {
@@ -24,57 +13,30 @@ const Vendors = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedLocation, setSelectedLocation] = useState('All');
+  const [availabilityFilter, setAvailabilityFilter] = useState('all');
+  
+  // Booking modal states
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
+  const [bookingForm, setBookingForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    notes: ''
+  });
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [bookingSuccess, setBookingSuccess] = useState(null);
 
   const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-  // Karachi areas list
   const karachiAreas = [
-    'All',
-    'Clifton',
-    'Defence (DHA)',
-    'Gulshan-e-Iqbal',
-    'North Nazimabad',
-    'Nazimabad',
-    'FB Area',
-    'Saddar',
-    'Buffer Zone',
-    'Bahadurabad',
-    'Numaish',
-    'New Karachi',
-    'North Karachi',
-    'Malir',
-    'Korangi',
-    'Landhi',
-    'Gulistan-e-Jauhar',
-    'Scheme 33',
-    'Surjani Town',
-    'North Karachi',
-    'Tariq Road',
-    'PECHS',
-    'Shahrah-e-Faisal',
-    'Soldier Bazaar',
-    'Garden',
-    'Liaquatabad',
-    'Orangi Town',
-    'Baldia Town',
-    'SITE Area',
-    'Kemari',
-    'Lyari',
-    'Jamshed Town',
-    'Gulberg',
-    'Johar',
-    'Shah Faisal Colony',
-    'Model Colony',
-    'Khayaban-e-Ittehad',
-    'Khayaban-e-Seher',
-    'Khayaban-e-Shahbaz',
-    'Khayaban-e-Bukhari',
-    'Khayaban-e-Rahat',
-    'Khayaban-e-Jami',
-    'Khayaban-e-Mujahid',
-    'Pakistan Chowk',
-    'Shahra-e-Pakistan',
-    'Shahra-e-Quaideen',
+    'All', 'Clifton', 'Defence (DHA)', 'Gulshan-e-Iqbal', 'North Nazimabad',
+    'Nazimabad', 'FB Area', 'Saddar', 'Buffer Zone', 'Bahadurabad', 'Numaish',
+    'New Karachi', 'North Karachi', 'Malir', 'Korangi', 'Landhi',
+    'Gulistan-e-Jauhar', 'Scheme 33', 'Surjani Town', 'Tariq Road', 'PECHS',
+    'Shahrah-e-Faisal', 'Soldier Bazaar', 'Garden', 'Liaquatabad',
+    'Orangi Town', 'Baldia Town', 'SITE Area', 'Kemari', 'Lyari'
   ];
 
   const categories = [
@@ -95,7 +57,7 @@ const Vendors = () => {
 
   useEffect(() => {
     filterServices();
-  }, [searchTerm, selectedCategory, selectedLocation, services]);
+  }, [searchTerm, selectedCategory, selectedLocation, availabilityFilter, services]);
 
   const fetchApprovedServices = async () => {
     try {
@@ -119,7 +81,6 @@ const Vendors = () => {
   const filterServices = () => {
     let filtered = [...services];
 
-    // Filter by search term
     if (searchTerm) {
       filtered = filtered.filter(service => 
         service.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -128,15 +89,19 @@ const Vendors = () => {
       );
     }
 
-    // Filter by category
     if (selectedCategory !== 'All') {
       filtered = filtered.filter(service => service.category === selectedCategory);
     }
 
-    // Filter by location
     if (selectedLocation !== 'All') {
       filtered = filtered.filter(service => 
         service.location.toLowerCase().includes(selectedLocation.toLowerCase())
+      );
+    }
+
+    if (availabilityFilter !== 'all') {
+      filtered = filtered.filter(service => 
+        service.vendorId?.availabilityStatus === availabilityFilter
       );
     }
 
@@ -155,6 +120,65 @@ const Vendors = () => {
       'Home Cleaning': '🧹'
     };
     return icons[category] || '🔧';
+  };
+
+  const handleBookNow = (service) => {
+    setSelectedService(service);
+    setShowBookingModal(true);
+    setBookingSuccess(null);
+    setError('');
+  };
+
+  const handleBookingSubmit = async (e) => {
+    e.preventDefault();
+    setBookingLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/bookings`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...bookingForm,
+          serviceId: selectedService._id,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setBookingSuccess(data);
+        setBookingForm({
+          name: '',
+          email: '',
+          phone: '',
+          address: '',
+          notes: ''
+        });
+      } else {
+        setError(data.message || 'Failed to create booking');
+      }
+    } catch (err) {
+      setError('Failed to submit booking. Please try again.');
+    } finally {
+      setBookingLoading(false);
+    }
+  };
+
+  const closeModal = () => {
+    setShowBookingModal(false);
+    setSelectedService(null);
+    setBookingSuccess(null);
+    setBookingForm({
+      name: '',
+      email: '',
+      phone: '',
+      address: '',
+      notes: ''
+    });
+    setError('');
   };
 
   if (loading) {
@@ -211,7 +235,7 @@ const Vendors = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {error && (
+        {error && !showBookingModal && (
           <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
             {error}
           </div>
@@ -226,7 +250,47 @@ const Vendors = () => {
                 <h2 className="text-xl font-bold text-gray-900">Filters</h2>
               </div>
 
-              {/* Category Filter */}
+              <div className="mb-6">
+                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <Wifi size={18} className="text-green-600" />
+                  Availability
+                </h3>
+                <div className="space-y-2">
+                  <button
+                    onClick={() => setAvailabilityFilter('all')}
+                    className={`w-full text-left px-4 py-2 rounded-lg transition-all ${
+                      availabilityFilter === 'all'
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    All Vendors
+                  </button>
+                  <button
+                    onClick={() => setAvailabilityFilter('available')}
+                    className={`w-full text-left px-4 py-2 rounded-lg transition-all flex items-center gap-2 ${
+                      availabilityFilter === 'available'
+                        ? 'bg-green-600 text-white'
+                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <Wifi size={16} />
+                    Available Now
+                  </button>
+                  <button
+                    onClick={() => setAvailabilityFilter('busy')}
+                    className={`w-full text-left px-4 py-2 rounded-lg transition-all flex items-center gap-2 ${
+                      availabilityFilter === 'busy'
+                        ? 'bg-orange-600 text-white'
+                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <WifiOff size={16} />
+                    Busy
+                  </button>
+                </div>
+              </div>
+
               <div className="mb-6">
                 <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
                   <Wrench size={18} className="text-blue-600" />
@@ -250,7 +314,6 @@ const Vendors = () => {
                 </div>
               </div>
 
-              {/* Location Filter */}
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
                   <MapPin size={18} className="text-red-600" />
@@ -267,13 +330,13 @@ const Vendors = () => {
                 </select>
               </div>
 
-              {/* Clear Filters */}
-              {(selectedCategory !== 'All' || selectedLocation !== 'All' || searchTerm) && (
+              {(selectedCategory !== 'All' || selectedLocation !== 'All' || searchTerm || availabilityFilter !== 'all') && (
                 <button
                   onClick={() => {
                     setSearchTerm('');
                     setSelectedCategory('All');
                     setSelectedLocation('All');
+                    setAvailabilityFilter('all');
                   }}
                   className="w-full mt-6 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg transition-all font-semibold shadow-lg"
                 >
@@ -289,16 +352,18 @@ const Vendors = () => {
               <h2 className="text-2xl font-bold text-gray-800">
                 {filteredServices.length} {filteredServices.length === 1 ? 'Service' : 'Services'} Found
               </h2>
-              {(selectedCategory !== 'All' || selectedLocation !== 'All') && (
+              {(selectedCategory !== 'All' || selectedLocation !== 'All' || availabilityFilter !== 'all') && (
                 <p className="text-gray-600 mt-1">
                   {selectedCategory !== 'All' && `Category: ${selectedCategory}`}
                   {selectedLocation !== 'All' && selectedCategory !== 'All' && ' • '}
                   {selectedLocation !== 'All' && `Location: ${selectedLocation}`}
+                  {availabilityFilter !== 'all' && ' • '}
+                  {availabilityFilter === 'available' && 'Available Now'}
+                  {availabilityFilter === 'busy' && 'Busy Vendors'}
                 </p>
               )}
             </div>
 
-            {/* Services Grid */}
             {filteredServices.length === 0 ? (
               <div className="bg-white rounded-2xl shadow-lg p-12 text-center border-2 border-dashed border-gray-300">
                 <div className="bg-gray-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -311,6 +376,7 @@ const Vendors = () => {
                     setSearchTerm('');
                     setSelectedCategory('All');
                     setSelectedLocation('All');
+                    setAvailabilityFilter('all');
                   }}
                   className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all"
                 >
@@ -325,18 +391,37 @@ const Vendors = () => {
                     className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 group hover:scale-[1.02]"
                   >
                     <div className="flex flex-col md:flex-row gap-6 p-6">
-                      {/* Service Icon & Status */}
                       <div className="flex-shrink-0">
                         <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-5xl shadow-lg">
                           {getCategoryIcon(service.category)}
                         </div>
-                        <div className="mt-3 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold text-center flex items-center justify-center gap-1">
-                          <CheckCircle size={12} />
-                          Verified
+                        <div className="mt-3 space-y-2">
+                          <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold text-center flex items-center justify-center gap-1">
+                            <CheckCircle size={12} />
+                            Verified
+                          </div>
+                          {service.vendorId?.availabilityStatus && (
+                            <div className={`px-3 py-1 rounded-full text-xs font-semibold text-center flex items-center justify-center gap-1 ${
+                              service.vendorId.availabilityStatus === 'available'
+                                ? 'bg-green-100 text-green-700'
+                                : 'bg-orange-100 text-orange-700'
+                            }`}>
+                              {service.vendorId.availabilityStatus === 'available' ? (
+                                <>
+                                  <Wifi size={12} />
+                                  Available
+                                </>
+                              ) : (
+                                <>
+                                  <WifiOff size={12} />
+                                  Busy
+                                </>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </div>
 
-                      {/* Service Details */}
                       <div className="flex-1">
                         <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-3">
                           <div>
@@ -373,7 +458,6 @@ const Vendors = () => {
                           </div>
                         </div>
 
-                        {/* Description */}
                         {service.description && (
                           <div className="bg-gray-50 rounded-xl p-4 mb-4 border border-gray-200">
                             <p className="text-sm text-gray-700 leading-relaxed">
@@ -382,7 +466,6 @@ const Vendors = () => {
                           </div>
                         )}
 
-                        {/* Availability & Contact */}
                         <div className="grid md:grid-cols-2 gap-4 mb-4">
                           <div className="flex items-start gap-3">
                             <div className="bg-purple-50 p-2 rounded-lg">
@@ -395,37 +478,28 @@ const Vendors = () => {
                           </div>
                           <div className="flex items-start gap-3">
                             <div className="bg-green-50 p-2 rounded-lg">
-                              <Phone className="text-green-600" size={18} />
+                              <DollarSign className="text-green-600" size={18} />
                             </div>
                             <div>
-                              <p className="text-xs text-gray-600 font-semibold mb-1">Contact</p>
-                              <p className="text-sm font-bold text-gray-800">{service.contact}</p>
+                              <p className="text-xs text-gray-600 font-semibold mb-1">Price Range</p>
+                              <p className="text-lg font-bold text-green-600">Rs. {service.price}</p>
                             </div>
                           </div>
                         </div>
 
-                        {/* Price & Action */}
                         <div className="pt-4 border-t border-gray-200">
-                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <div className="flex items-center gap-4">
-                              <div className="flex items-center gap-2">
-                                <DollarSign className="text-green-600" size={20} />
-                                <div>
-                                  <p className="text-xs text-gray-600">Price Range</p>
-                                  <p className="text-lg font-bold text-green-600">Rs. {service.price}</p>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="flex gap-2">
-                              <a
-                                href={`tel:${service.contact}`}
-                                className="flex-1 sm:flex-none bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
-                              >
-                                <Phone size={18} />
-                                Contact Now
-                              </a>
-                            </div>
-                          </div>
+                          <button
+                            onClick={() => handleBookNow(service)}
+                            disabled={service.vendorId?.availabilityStatus === 'busy'}
+                            className={`w-full md:w-auto px-8 py-3 rounded-xl font-bold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 ${
+                              service.vendorId?.availabilityStatus === 'busy'
+                                ? 'bg-gray-400 text-white cursor-not-allowed'
+                                : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white'
+                            }`}
+                          >
+                            <Calendar size={18} />
+                            {service.vendorId?.availabilityStatus === 'busy' ? 'Currently Busy' : 'Book Now'}
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -434,7 +508,6 @@ const Vendors = () => {
               </div>
             )}
 
-            {/* Stats Footer */}
             {filteredServices.length > 0 && (
               <div className="mt-12 grid md:grid-cols-3 gap-6">
                 <div className="bg-white rounded-2xl shadow-lg p-6 text-center border-l-4 border-blue-500">
@@ -443,9 +516,11 @@ const Vendors = () => {
                   <p className="text-gray-600 font-semibold">Verified Vendors</p>
                 </div>
                 <div className="bg-white rounded-2xl shadow-lg p-6 text-center border-l-4 border-green-500">
-                  <Star className="text-yellow-500 fill-yellow-500 mx-auto mb-3" size={32} />
-                  <p className="text-3xl font-bold text-gray-800 mb-1">4.8+</p>
-                  <p className="text-gray-600 font-semibold">Average Rating</p>
+                  <Wifi className="text-green-600 mx-auto mb-3" size={32} />
+                  <p className="text-3xl font-bold text-gray-800 mb-1">
+                    {services.filter(s => s.vendorId?.availabilityStatus === 'available').length}+
+                  </p>
+                  <p className="text-gray-600 font-semibold">Available Now</p>
                 </div>
                 <div className="bg-white rounded-2xl shadow-lg p-6 text-center border-l-4 border-purple-500">
                   <CheckCircle className="text-green-600 mx-auto mb-3" size={32} />
@@ -457,6 +532,204 @@ const Vendors = () => {
           </div>
         </div>
       </div>
+
+      {/* Booking Modal */}
+      {showBookingModal && selectedService && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 rounded-t-2xl flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-white mb-1">Book Service</h2>
+                <p className="text-blue-100">Fill in your details to book this service</p>
+              </div>
+              <button
+                onClick={closeModal}
+                className="text-white hover:bg-white/20 p-2 rounded-lg transition-all"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="p-6">
+              {!bookingSuccess ? (
+                <>
+                  <div className="bg-blue-50 rounded-xl p-4 mb-6 border border-blue-200">
+                    <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                      <Briefcase size={18} className="text-blue-600" />
+                      Service Details
+                    </h3>
+                    <div className="grid md:grid-cols-2 gap-3 text-sm">
+                      <p className="text-gray-700"><span className="font-semibold">Vendor:</span> {selectedService.vendorId?.name}</p>
+                      <p className="text-gray-700"><span className="font-semibold">Service:</span> {selectedService.category}</p>
+                      <p className="text-gray-700"><span className="font-semibold">Location:</span> {selectedService.location}</p>
+                      <p className="text-gray-700"><span className="font-semibold">Price:</span> Rs. {selectedService.price}</p>
+                    </div>
+                  </div>
+
+                  {error && (
+                    <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl flex items-center gap-2">
+                      <X size={20} />
+                      {error}
+                    </div>
+                  )}
+
+                  <form onSubmit={handleBookingSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                        <User size={16} className="text-blue-600" />
+                        Your Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={bookingForm.name}
+                        onChange={(e) => setBookingForm({...bookingForm, name: e.target.value})}
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        placeholder="Enter your full name"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                        <Mail size={16} className="text-blue-600" />
+                        Email Address *
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        value={bookingForm.email}
+                        onChange={(e) => setBookingForm({...bookingForm, email: e.target.value})}
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        placeholder="your.email@example.com"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                        <PhoneIcon size={16} className="text-blue-600" />
+                        Phone Number *
+                      </label>
+                      <input
+                        type="tel"
+                        required
+                        value={bookingForm.phone}
+                        onChange={(e) => setBookingForm({...bookingForm, phone: e.target.value})}
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        placeholder="+92 300 1234567"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                        <Home size={16} className="text-blue-600" />
+                        Address *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={bookingForm.address}
+                        onChange={(e) => setBookingForm({...bookingForm, address: e.target.value})}
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        placeholder="Your complete address"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                        <MessageSquare size={16} className="text-blue-600" />
+                        Additional Notes (Optional)
+                      </label>
+                      <textarea
+                        value={bookingForm.notes}
+                        onChange={(e) => setBookingForm({...bookingForm, notes: e.target.value})}
+                        rows="3"
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        placeholder="Any specific requirements or details..."
+                      />
+                    </div>
+
+                    <div className="flex gap-3 pt-4">
+                      <button
+                        type="button"
+                        onClick={closeModal}
+                        className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-bold hover:bg-gray-50 transition-all"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={bookingLoading}
+                        className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      >
+                        {bookingLoading ? (
+                          <>
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                            Submitting...
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle size={20} />
+                            Confirm Booking
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                </>
+              ) : (
+                <div className="text-center py-8">
+                  <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <CheckCircle className="text-green-600" size={48} />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Booking Confirmed!</h3>
+                  <p className="text-gray-600 mb-6">Your booking has been successfully created.</p>
+                  
+                  <div className="bg-blue-50 rounded-xl p-6 mb-6 text-left border border-blue-200">
+                    <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                      <PhoneIcon size={20} className="text-blue-600" />
+                      Vendor Contact Information
+                    </h4>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <User size={18} className="text-gray-600" />
+                        <div>
+                          <p className="text-xs text-gray-600 font-semibold">Name</p>
+                          <p className="text-sm font-bold text-gray-900">{bookingSuccess.vendorContact.name}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <PhoneIcon size={18} className="text-green-600" />
+                        <div>
+                          <p className="text-xs text-gray-600 font-semibold">Phone</p>
+                          <a href={`tel:${bookingSuccess.vendorContact.phone}`} className="text-sm font-bold text-blue-600 hover:text-blue-700">
+                            {bookingSuccess.vendorContact.phone}
+                          </a>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Mail size={18} className="text-blue-600" />
+                        <div>
+                          <p className="text-xs text-gray-600 font-semibold">Email</p>
+                          <a href={`mailto:${bookingSuccess.vendorContact.email}`} className="text-sm font-bold text-blue-600 hover:text-blue-700">
+                            {bookingSuccess.vendorContact.email}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={closeModal}
+                    className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg"
+                  >
+                    Close
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

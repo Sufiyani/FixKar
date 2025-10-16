@@ -1,7 +1,7 @@
 import Service from "../models/Service.js";
 import Vendor from "../models/Vendor.js";
 
-// ✅ Create service
+// ✅ Create Service
 export const createService = async (req, res) => {
   try {
     const vendorId = req.vendor._id;
@@ -18,7 +18,7 @@ export const createService = async (req, res) => {
   }
 };
 
-// ✅ Get vendor services
+// ✅ Get Vendor Services
 export const getVendorServices = async (req, res) => {
   try {
     const services = await Service.find({ vendorId: req.vendor._id });
@@ -28,7 +28,7 @@ export const getVendorServices = async (req, res) => {
   }
 };
 
-// ✅ Delete service
+// ✅ Delete Service
 export const deleteService = async (req, res) => {
   try {
     const service = await Service.findOneAndDelete({
@@ -46,17 +46,17 @@ export const deleteService = async (req, res) => {
   }
 };
 
-// ✅ Get vendor stats
+// ✅ Get Vendor Stats
 export const getVendorStats = async (req, res) => {
   try {
     const services = await Service.find({ vendorId: req.vendor._id });
 
     const stats = {
-      totalBookings: 0,
+      totalBookings: 0, // TODO: Implement later
       rating: 4.8,
-      earnings: 0,
+      earnings: 0, // TODO: Implement later
       activeServices: services.filter((s) => s.status === "Approved").length,
-      reviews: 0,
+      reviews: 0, // TODO: Implement later
     };
 
     res.json(stats);
@@ -65,7 +65,7 @@ export const getVendorStats = async (req, res) => {
   }
 };
 
-// ✅ Get vendor profile
+// ✅ Get Vendor Profile
 export const getVendorProfile = async (req, res) => {
   try {
     const vendor = await Vendor.findById(req.vendor._id).select("-password");

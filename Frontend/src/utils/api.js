@@ -69,6 +69,30 @@ export const adminAPI = {
     return handleResponse(response);
   },
 
+  getAllVendors: async () => {
+    const response = await fetch(`${API_BASE_URL}/admin/vendors`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
+  },
+
+  deleteVendor: async (vendorId) => {
+    const response = await fetch(`${API_BASE_URL}/admin/vendors/${vendorId}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
+  },
+
+  getAllBookings: async () => {
+    const response = await fetch(`${API_BASE_URL}/admin/bookings`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
+  },
+
   getStats: async () => {
     const response = await fetch(`${API_BASE_URL}/admin/stats`, {
       method: "GET",
@@ -111,6 +135,15 @@ export const vendorAPI = {
       method: "PUT",
       headers: getAuthHeaders(),
       body: JSON.stringify(updateData),
+    });
+    return handleResponse(response);
+  },
+
+  updateAvailability: async (availabilityStatus) => {
+    const response = await fetch(`${API_BASE_URL}/vendors/availability`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ availabilityStatus }),
     });
     return handleResponse(response);
   },
@@ -160,6 +193,59 @@ export const serviceAPI = {
   },
 };
 
+// Booking APIs
+export const bookingAPI = {
+  createBooking: async (bookingData) => {
+    const response = await fetch(`${API_BASE_URL}/bookings`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(bookingData),
+    });
+    return handleResponse(response);
+  },
+
+  getAllBookings: async () => {
+    const response = await fetch(`${API_BASE_URL}/bookings`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
+  },
+
+  getBookingById: async (bookingId) => {
+    const response = await fetch(`${API_BASE_URL}/bookings/${bookingId}`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
+  },
+
+  updateBookingStatus: async (bookingId, status) => {
+    const response = await fetch(`${API_BASE_URL}/bookings/${bookingId}/status`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ status }),
+    });
+    return handleResponse(response);
+  },
+
+  deleteBooking: async (bookingId) => {
+    const response = await fetch(`${API_BASE_URL}/bookings/${bookingId}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
+  },
+
+  getBookingStats: async () => {
+    const response = await fetch(`${API_BASE_URL}/bookings/stats`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
+  },
+};
+
 // Helper functions for the vendor dashboard
 export const createService = serviceAPI.createService;
 export const getVendorServices = serviceAPI.getVendorServices;
@@ -171,4 +257,5 @@ export default {
   adminAPI,
   vendorAPI,
   serviceAPI,
+  bookingAPI,
 };

@@ -1,22 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { 
-  PlusCircle, 
-  MapPin, 
-  Wrench, 
-  Phone, 
-  Calendar, 
-  Star,
-  DollarSign,
-  Clock,
-  TrendingUp,
-  Award,
-  Users,
-  CheckCircle,
-  Edit2,
-  Trash2,
-  Save,
-  AlertCircle,
-  XCircle
+  PlusCircle, MapPin, Wrench, Phone, Calendar, Star, DollarSign, Clock,
+  TrendingUp, Award, Users, CheckCircle, Edit2, Trash2, Save, AlertCircle,
+  XCircle, Power, Wifi, WifiOff
 } from "lucide-react";
 
 const VendorDashboard = () => {
@@ -27,6 +13,7 @@ const VendorDashboard = () => {
     earnings: 0,
     activeServices: 0
   });
+  const [vendorStatus, setVendorStatus] = useState('available'); // available or busy
   const [showAddForm, setShowAddForm] = useState(false);
   const [newService, setNewService] = useState({
     category: "",
@@ -60,6 +47,13 @@ const VendorDashboard = () => {
     try {
       setLoading(true);
       
+      // Fetch vendor profile (includes status)
+      const profileRes = await fetch(`${API_BASE_URL}/vendors/profile`, {
+        headers: getAuthHeaders()
+      });
+      const profileData = await profileRes.json();
+      setVendorStatus(profileData.availabilityStatus || 'available');
+      
       // Fetch vendor services
       const servicesRes = await fetch(`${API_BASE_URL}/vendors/services`, {
         headers: getAuthHeaders()
@@ -78,6 +72,28 @@ const VendorDashboard = () => {
     } catch (err) {
       setError('Failed to fetch data');
       setLoading(false);
+    }
+  };
+
+  const toggleAvailability = async () => {
+    try {
+      const newStatus = vendorStatus === 'available' ? 'busy' : 'available';
+      
+      const response = await fetch(`${API_BASE_URL}/vendors/availability`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ availabilityStatus: newStatus })
+      });
+
+      if (response.ok) {
+        setVendorStatus(newStatus);
+        setSuccess(`You are now ${newStatus === 'available' ? 'Available' : 'Busy'}`);
+        setTimeout(() => setSuccess(''), 3000);
+      } else {
+        setError('Failed to update availability');
+      }
+    } catch (err) {
+      setError('Failed to update availability');
     }
   };
 
@@ -114,7 +130,6 @@ const VendorDashboard = () => {
         });
         setShowAddForm(false);
         
-        // Refresh data
         setTimeout(() => {
           fetchVendorData();
           setSuccess('');
@@ -187,7 +202,7 @@ const VendorDashboard = () => {
         </div>
       </div>
     );
-  }
+  };
 
   const recentBookings = [
     { id: 1, customer: "Hassan Malik", service: "Plumbing", date: "2025-10-10", status: "completed", amount: 1200 },
@@ -216,11 +231,11 @@ const VendorDashboard = () => {
           </div>
         )}
 
-        {/* Welcome Banner */}
+        {/* Welcome Banner with Availability Toggle */}
         <div className="relative overflow-hidden bg-gradient-to-br from-green-600 via-emerald-600 to-teal-700 rounded-3xl p-8 mb-8 shadow-2xl">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
           
-          <div className="relative flex flex-col md:flex-row items-center justify-between">
+          <div className="relative flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="mb-4 md:mb-0">
               <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">
                 <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
@@ -230,19 +245,44 @@ const VendorDashboard = () => {
               </h1>
               <p className="text-green-100 text-lg">Manage your services and track your performance</p>
             </div>
-            <button
-              onClick={() => setShowAddForm(!showAddForm)}
-              className="flex items-center gap-2 bg-white text-green-600 px-6 py-3 rounded-xl font-bold hover:bg-green-50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
-            >
-              <PlusCircle size={20} />
-              Add New Service
-            </button>
+            
+            <div className="flex gap-3">
+              {/* Availability Toggle */}
+              <button
+                onClick={toggleAvailability}
+                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all shadow-lg ${
+                  vendorStatus === 'available' 
+                    ? 'bg-green-500 hover:bg-green-600 text-white' 
+                    : 'bg-yellow-500 hover:bg-yellow-600 text-white'
+                }`}
+              >
+                {vendorStatus === 'available' ? (
+                  <>
+                    <Wifi size={20} />
+                    Available
+                  </>
+                ) : (
+                  <>
+                    <WifiOff size={20} />
+                    Busy
+                  </>
+                )}
+              </button>
+
+              <button
+                onClick={() => setShowAddForm(!showAddForm)}
+                className="flex items-center gap-2 bg-white text-green-600 px-6 py-3 rounded-xl font-bold hover:bg-green-50 transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                <PlusCircle size={20} />
+                Add Service
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500 hover:shadow-xl transition-all hover:scale-105">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500 hover:shadow-xl transition-all">
             <div className="flex items-center justify-between mb-4">
               <div className="bg-blue-100 p-3 rounded-xl">
                 <Calendar className="text-blue-600" size={28} />
@@ -254,7 +294,7 @@ const VendorDashboard = () => {
             <p className="text-green-600 text-sm mt-2 font-semibold">↑ 12% this month</p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-yellow-500 hover:shadow-xl transition-all hover:scale-105">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-yellow-500 hover:shadow-xl transition-all">
             <div className="flex items-center justify-between mb-4">
               <div className="bg-yellow-100 p-3 rounded-xl">
                 <Star className="text-yellow-600 fill-yellow-600" size={28} />
@@ -266,7 +306,7 @@ const VendorDashboard = () => {
             <p className="text-gray-600 text-sm mt-2">Based on {stats.reviews || 0} reviews</p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition-all hover:scale-105">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition-all">
             <div className="flex items-center justify-between mb-4">
               <div className="bg-green-100 p-3 rounded-xl">
                 <DollarSign className="text-green-600" size={28} />
@@ -278,7 +318,7 @@ const VendorDashboard = () => {
             <p className="text-green-600 text-sm mt-2 font-semibold">↑ 8% increase</p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-purple-500 hover:shadow-xl transition-all hover:scale-105">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-purple-500 hover:shadow-xl transition-all">
             <div className="flex items-center justify-between mb-4">
               <div className="bg-purple-100 p-3 rounded-xl">
                 <Users className="text-purple-600" size={28} />

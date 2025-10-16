@@ -7,14 +7,32 @@ const serviceSchema = mongoose.Schema(
       ref: "Vendor",
       required: true,
     },
-    category: { type: String, required: true },
-    location: { type: String, required: true },
-    contact: { type: String, required: true },
-    availability: { type: String, required: true },
-    price: { type: String, required: true },
-    experience: String,
-    description: String,
-    services: [String],
+    category: {
+      type: String,
+      required: true,
+    },
+    location: {
+      type: String,
+      required: true,
+    },
+    contact: {
+      type: String,
+      required: true,
+    },
+    availability: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: String,
+      required: true,
+    },
+    experience: {
+      type: String,
+    },
+    description: {
+      type: String,
+    },
     status: {
       type: String,
       enum: ["Pending", "Approved", "Disapproved"],

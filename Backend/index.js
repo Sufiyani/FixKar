@@ -5,6 +5,7 @@ import cors from "cors";
 import connectDB from "./lib/db.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import vendorRoutes from "./routes/vendorRoutes.js";
+import bookingRoutes from "./routes/bookingRoutes.js";
 import { createAdmin } from "./controllers/adminController.js";
 
 dotenv.config();
@@ -23,7 +24,7 @@ app.use(
 );
 
 // ✅ Create default admin
-createAdmin();
+// createAdmin();
 
 // Routes
 app.get("/", (req, res) => {
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/admin", adminRoutes);
 app.use("/api/vendors", vendorRoutes);
+app.use("/api/bookings", bookingRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>

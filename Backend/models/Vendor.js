@@ -3,16 +3,40 @@ import bcrypt from "bcryptjs";
 
 const vendorSchema = mongoose.Schema(
   {
-    name: String,
-    email: { type: String, unique: true },
-    phone: String,
-    category: String,
-    location: String,
-    password: String,
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    category: {
+      type: String,
+      required: true,
+    },
+    location: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
     status: {
       type: String,
       enum: ["Pending", "Approved", "Disapproved"],
-      default: "Pending",
+      default: "Approved",
+    },
+    availabilityStatus: {
+      type: String,
+      enum: ["available", "busy"],
+      default: "available",
     },
   },
   { timestamps: true }
