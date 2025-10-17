@@ -15,7 +15,6 @@ const Vendors = () => {
   const [selectedLocation, setSelectedLocation] = useState('All');
   const [availabilityFilter, setAvailabilityFilter] = useState('all');
   
-  // Booking modal states
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [bookingForm, setBookingForm] = useState({
@@ -183,50 +182,48 @@ const Vendors = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg">Loading services...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-2 border-slate-900 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading services...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-white">
       {/* Header Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-b-3xl py-16">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="bg-slate-900 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
-                <Wrench className="text-white" size={40} />
+              <div className="bg-white/10 backdrop-blur-sm p-3 rounded-xl">
+                <Wrench className="text-white" size={32} />
               </div>
             </div>
-            <h1 className="text-5xl font-bold text-white mb-3">Find Expert Vendors</h1>
-            <p className="text-blue-100 text-lg max-w-2xl mx-auto">
+            <h1 className="text-4xl md:text-5xl font-semibold text-white mb-3">Find Expert Vendors</h1>
+            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
               Browse verified professionals for all your home service needs
             </p>
             <div className="flex items-center justify-center gap-2 mt-4">
-              <CheckCircle className="text-green-300" size={20} />
-              <span className="text-blue-100 font-semibold">
+              <CheckCircle className="text-emerald-400" size={18} />
+              <span className="text-gray-300 text-sm">
                 {filteredServices.length} Verified Professionals Available
               </span>
             </div>
           </div>
 
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-2xl p-2">
+          <div className="max-w-3xl mx-auto">
+            <div className="bg-white rounded-2xl shadow-sm p-2">
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
                 <input
                   type="text"
                   placeholder="Search by service, location, or vendor name..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
                 />
               </div>
             </div>
@@ -236,7 +233,7 @@ const Vendors = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {error && !showBookingModal && (
-          <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
+          <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl text-sm">
             {error}
           </div>
         )}
@@ -244,23 +241,23 @@ const Vendors = () => {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar Filters */}
           <div className="lg:w-72 flex-shrink-0">
-            <div className="bg-white rounded-2xl p-6 shadow-lg sticky top-4">
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 sticky top-4">
               <div className="flex items-center gap-2 mb-6">
-                <Filter className="text-blue-600" size={24} />
-                <h2 className="text-xl font-bold text-gray-900">Filters</h2>
+                <Filter className="text-slate-900" size={20} />
+                <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
               </div>
 
               <div className="mb-6">
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <Wifi size={18} className="text-green-600" />
+                <h3 className="font-medium text-gray-900 mb-3 text-sm flex items-center gap-2">
+                  <Wifi size={16} className="text-emerald-600" />
                   Availability
                 </h3>
                 <div className="space-y-2">
                   <button
                     onClick={() => setAvailabilityFilter('all')}
-                    className={`w-full text-left px-4 py-2 rounded-lg transition-all ${
+                    className={`w-full text-left px-3 py-2 rounded-lg transition-all text-sm ${
                       availabilityFilter === 'all'
-                        ? 'bg-blue-600 text-white'
+                        ? 'bg-slate-900 text-white'
                         : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                     }`}
                   >
@@ -268,32 +265,32 @@ const Vendors = () => {
                   </button>
                   <button
                     onClick={() => setAvailabilityFilter('available')}
-                    className={`w-full text-left px-4 py-2 rounded-lg transition-all flex items-center gap-2 ${
+                    className={`w-full text-left px-3 py-2 rounded-lg transition-all flex items-center gap-2 text-sm ${
                       availabilityFilter === 'available'
-                        ? 'bg-green-600 text-white'
+                        ? 'bg-emerald-600 text-white'
                         : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                     }`}
                   >
-                    <Wifi size={16} />
+                    <Wifi size={14} />
                     Available Now
                   </button>
                   <button
                     onClick={() => setAvailabilityFilter('busy')}
-                    className={`w-full text-left px-4 py-2 rounded-lg transition-all flex items-center gap-2 ${
+                    className={`w-full text-left px-3 py-2 rounded-lg transition-all flex items-center gap-2 text-sm ${
                       availabilityFilter === 'busy'
                         ? 'bg-orange-600 text-white'
                         : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                     }`}
                   >
-                    <WifiOff size={16} />
+                    <WifiOff size={14} />
                     Busy
                   </button>
                 </div>
               </div>
 
               <div className="mb-6">
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <Wrench size={18} className="text-blue-600" />
+                <h3 className="font-medium text-gray-900 mb-3 text-sm flex items-center gap-2">
+                  <Wrench size={16} className="text-slate-900" />
                   Category
                 </h3>
                 <div className="space-y-2 max-h-64 overflow-y-auto">
@@ -301,9 +298,9 @@ const Vendors = () => {
                     <button
                       key={cat.name}
                       onClick={() => setSelectedCategory(cat.name)}
-                      className={`w-full text-left px-4 py-2 rounded-lg transition-all flex items-center gap-2 ${
+                      className={`w-full text-left px-3 py-2 rounded-lg transition-all flex items-center gap-2 text-sm ${
                         selectedCategory === cat.name
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-slate-900 text-white'
                           : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                       }`}
                     >
@@ -315,14 +312,14 @@ const Vendors = () => {
               </div>
 
               <div>
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <MapPin size={18} className="text-red-600" />
+                <h3 className="font-medium text-gray-900 mb-3 text-sm flex items-center gap-2">
+                  <MapPin size={16} className="text-red-600" />
                   Location (Karachi)
                 </h3>
                 <select
                   value={selectedLocation}
                   onChange={(e) => setSelectedLocation(e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all text-sm"
                 >
                   {karachiAreas.map(area => (
                     <option key={area} value={area}>{area}</option>
@@ -338,7 +335,7 @@ const Vendors = () => {
                     setSelectedLocation('All');
                     setAvailabilityFilter('all');
                   }}
-                  className="w-full mt-6 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg transition-all font-semibold shadow-lg"
+                  className="w-full mt-6 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all font-medium shadow-sm text-sm"
                 >
                   Clear All Filters
                 </button>
@@ -349,11 +346,11 @@ const Vendors = () => {
           {/* Main Content */}
           <div className="flex-1">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-800">
+              <h2 className="text-2xl font-semibold text-gray-900">
                 {filteredServices.length} {filteredServices.length === 1 ? 'Service' : 'Services'} Found
               </h2>
               {(selectedCategory !== 'All' || selectedLocation !== 'All' || availabilityFilter !== 'all') && (
-                <p className="text-gray-600 mt-1">
+                <p className="text-gray-500 mt-1 text-sm">
                   {selectedCategory !== 'All' && `Category: ${selectedCategory}`}
                   {selectedLocation !== 'All' && selectedCategory !== 'All' && ' • '}
                   {selectedLocation !== 'All' && `Location: ${selectedLocation}`}
@@ -365,12 +362,12 @@ const Vendors = () => {
             </div>
 
             {filteredServices.length === 0 ? (
-              <div className="bg-white rounded-2xl shadow-lg p-12 text-center border-2 border-dashed border-gray-300">
-                <div className="bg-gray-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Search className="text-gray-400" size={40} />
+              <div className="bg-white rounded-2xl shadow-sm p-12 text-center border-2 border-dashed border-gray-200">
+                <div className="bg-gray-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="text-gray-400" size={32} />
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">No Services Found</h3>
-                <p className="text-gray-600 mb-6">Try adjusting your search filters</p>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">No Services Found</h3>
+                <p className="text-gray-500 mb-6 text-sm">Try adjusting your search filters</p>
                 <button
                   onClick={() => {
                     setSearchTerm('');
@@ -378,33 +375,33 @@ const Vendors = () => {
                     setSelectedLocation('All');
                     setAvailabilityFilter('all');
                   }}
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all"
+                  className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-xl font-medium transition-all"
                 >
                   Clear All Filters
                 </button>
               </div>
             ) : (
-              <div className="grid md:grid-cols-1 gap-6">
+              <div className="space-y-6">
                 {filteredServices.map((service) => (
                   <div
                     key={service._id}
-                    className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 group hover:scale-[1.02]"
+                    className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-200"
                   >
                     <div className="flex flex-col md:flex-row gap-6 p-6">
                       <div className="flex-shrink-0">
-                        <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-5xl shadow-lg">
+                        <div className="w-20 h-20 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl flex items-center justify-center text-4xl shadow-sm">
                           {getCategoryIcon(service.category)}
                         </div>
                         <div className="mt-3 space-y-2">
-                          <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold text-center flex items-center justify-center gap-1">
+                          <div className="bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full text-xs font-medium text-center flex items-center justify-center gap-1">
                             <CheckCircle size={12} />
                             Verified
                           </div>
                           {service.vendorId?.availabilityStatus && (
-                            <div className={`px-3 py-1 rounded-full text-xs font-semibold text-center flex items-center justify-center gap-1 ${
+                            <div className={`px-2.5 py-1 rounded-full text-xs font-medium text-center flex items-center justify-center gap-1 ${
                               service.vendorId.availabilityStatus === 'available'
-                                ? 'bg-green-100 text-green-700'
-                                : 'bg-orange-100 text-orange-700'
+                                ? 'bg-emerald-50 text-emerald-700'
+                                : 'bg-orange-50 text-orange-700'
                             }`}>
                               {service.vendorId.availabilityStatus === 'available' ? (
                                 <>
@@ -426,34 +423,34 @@ const Vendors = () => {
                         <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-3">
                           <div>
                             <div className="flex items-center gap-2 mb-2">
-                              <h3 className="text-2xl font-bold text-gray-900">{service.vendorId?.name}</h3>
-                              <div className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full flex items-center gap-1 text-xs">
+                              <h3 className="text-xl font-semibold text-gray-900">{service.vendorId?.name}</h3>
+                              <div className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full flex items-center gap-1 text-xs">
                                 <Shield size={12} />
                                 <span>Verified</span>
                               </div>
                             </div>
-                            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-2">
+                            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600 mb-2">
                               <span className="flex items-center gap-1">
-                                <Briefcase size={16} className="text-blue-600" />
+                                <Briefcase size={14} className="text-slate-600" />
                                 {service.category}
                               </span>
                               <span className="flex items-center gap-1">
-                                <MapPin size={16} className="text-red-600" />
+                                <MapPin size={14} className="text-red-600" />
                                 {service.location}
                               </span>
                               {service.experience && (
                                 <span className="flex items-center gap-1">
-                                  <Award size={16} className="text-orange-600" />
+                                  <Award size={14} className="text-orange-600" />
                                   {service.experience}
                                 </span>
                               )}
                             </div>
                           </div>
                           <div className="text-right mt-2 md:mt-0">
-                            <div className="flex items-center gap-1 mb-1">
-                              <Star className="text-yellow-500 fill-yellow-500" size={20} />
-                              <span className="text-xl font-bold text-gray-900">4.8</span>
-                              <span className="text-sm text-gray-600">(50+)</span>
+                            <div className="flex items-center gap-1">
+                              <Star className="text-amber-400 fill-amber-400" size={16} />
+                              <span className="text-lg font-semibold text-gray-900">4.8</span>
+                              <span className="text-xs text-gray-500">(50+)</span>
                             </div>
                           </div>
                         </div>
@@ -469,20 +466,20 @@ const Vendors = () => {
                         <div className="grid md:grid-cols-2 gap-4 mb-4">
                           <div className="flex items-start gap-3">
                             <div className="bg-purple-50 p-2 rounded-lg">
-                              <Clock className="text-purple-600" size={18} />
+                              <Clock className="text-purple-600" size={16} />
                             </div>
                             <div>
-                              <p className="text-xs text-gray-600 font-semibold mb-1">Availability</p>
-                              <p className="text-sm font-bold text-gray-800">{service.availability}</p>
+                              <p className="text-xs text-gray-500 font-medium mb-0.5">Availability</p>
+                              <p className="text-sm font-semibold text-gray-900">{service.availability}</p>
                             </div>
                           </div>
                           <div className="flex items-start gap-3">
-                            <div className="bg-green-50 p-2 rounded-lg">
-                              <DollarSign className="text-green-600" size={18} />
+                            <div className="bg-emerald-50 p-2 rounded-lg">
+                              <DollarSign className="text-emerald-600" size={16} />
                             </div>
                             <div>
-                              <p className="text-xs text-gray-600 font-semibold mb-1">Price Range</p>
-                              <p className="text-lg font-bold text-green-600">Rs. {service.price}</p>
+                              <p className="text-xs text-gray-500 font-medium mb-0.5">Price Range</p>
+                              <p className="text-base font-semibold text-emerald-600">Rs. {service.price}</p>
                             </div>
                           </div>
                         </div>
@@ -491,13 +488,13 @@ const Vendors = () => {
                           <button
                             onClick={() => handleBookNow(service)}
                             disabled={service.vendorId?.availabilityStatus === 'busy'}
-                            className={`w-full md:w-auto px-8 py-3 rounded-xl font-bold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 ${
+                            className={`w-full md:w-auto px-6 py-2.5 rounded-xl font-medium transition-all shadow-sm flex items-center justify-center gap-2 text-sm ${
                               service.vendorId?.availabilityStatus === 'busy'
                                 ? 'bg-gray-400 text-white cursor-not-allowed'
-                                : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white'
+                                : 'bg-slate-900 hover:bg-slate-800 text-white'
                             }`}
                           >
-                            <Calendar size={18} />
+                            <Calendar size={16} />
                             {service.vendorId?.availabilityStatus === 'busy' ? 'Currently Busy' : 'Book Now'}
                           </button>
                         </div>
@@ -510,22 +507,22 @@ const Vendors = () => {
 
             {filteredServices.length > 0 && (
               <div className="mt-12 grid md:grid-cols-3 gap-6">
-                <div className="bg-white rounded-2xl shadow-lg p-6 text-center border-l-4 border-blue-500">
-                  <TrendingUp className="text-blue-600 mx-auto mb-3" size={32} />
-                  <p className="text-3xl font-bold text-gray-800 mb-1">{services.length}+</p>
-                  <p className="text-gray-600 font-semibold">Verified Vendors</p>
+                <div className="bg-white rounded-2xl shadow-sm p-6 text-center border-l-4 border-slate-900">
+                  <TrendingUp className="text-slate-900 mx-auto mb-3" size={28} />
+                  <p className="text-3xl font-semibold text-gray-900 mb-1">{services.length}+</p>
+                  <p className="text-gray-600 text-sm">Verified Vendors</p>
                 </div>
-                <div className="bg-white rounded-2xl shadow-lg p-6 text-center border-l-4 border-green-500">
-                  <Wifi className="text-green-600 mx-auto mb-3" size={32} />
-                  <p className="text-3xl font-bold text-gray-800 mb-1">
+                <div className="bg-white rounded-2xl shadow-sm p-6 text-center border-l-4 border-emerald-600">
+                  <Wifi className="text-emerald-600 mx-auto mb-3" size={28} />
+                  <p className="text-3xl font-semibold text-gray-900 mb-1">
                     {services.filter(s => s.vendorId?.availabilityStatus === 'available').length}+
                   </p>
-                  <p className="text-gray-600 font-semibold">Available Now</p>
+                  <p className="text-gray-600 text-sm">Available Now</p>
                 </div>
-                <div className="bg-white rounded-2xl shadow-lg p-6 text-center border-l-4 border-purple-500">
-                  <CheckCircle className="text-green-600 mx-auto mb-3" size={32} />
-                  <p className="text-3xl font-bold text-gray-800 mb-1">100%</p>
-                  <p className="text-gray-600 font-semibold">Verified Services</p>
+                <div className="bg-white rounded-2xl shadow-sm p-6 text-center border-l-4 border-purple-600">
+                  <CheckCircle className="text-emerald-600 mx-auto mb-3" size={28} />
+                  <p className="text-3xl font-semibold text-gray-900 mb-1">100%</p>
+                  <p className="text-gray-600 text-sm">Verified Services</p>
                 </div>
               </div>
             )}
@@ -536,47 +533,47 @@ const Vendors = () => {
       {/* Booking Modal */}
       {showBookingModal && selectedService && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 rounded-t-2xl flex items-center justify-between">
+          <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-slate-900 p-6 rounded-t-2xl flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-white mb-1">Book Service</h2>
-                <p className="text-blue-100">Fill in your details to book this service</p>
+                <h2 className="text-2xl font-semibold text-white mb-1">Book Service</h2>
+                <p className="text-gray-300 text-sm">Fill in your details to book this service</p>
               </div>
               <button
                 onClick={closeModal}
-                className="text-white hover:bg-white/20 p-2 rounded-lg transition-all"
+                className="text-white hover:bg-white/10 p-2 rounded-lg transition-all"
               >
-                <X size={24} />
+                <X size={20} />
               </button>
             </div>
 
             <div className="p-6">
               {!bookingSuccess ? (
                 <>
-                  <div className="bg-blue-50 rounded-xl p-4 mb-6 border border-blue-200">
-                    <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
-                      <Briefcase size={18} className="text-blue-600" />
+                  <div className="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-200">
+                    <h3 className="font-semibold text-gray-900 mb-2 text-sm flex items-center gap-2">
+                      <Briefcase size={16} className="text-slate-900" />
                       Service Details
                     </h3>
-                    <div className="grid md:grid-cols-2 gap-3 text-sm">
-                      <p className="text-gray-700"><span className="font-semibold">Vendor:</span> {selectedService.vendorId?.name}</p>
-                      <p className="text-gray-700"><span className="font-semibold">Service:</span> {selectedService.category}</p>
-                      <p className="text-gray-700"><span className="font-semibold">Location:</span> {selectedService.location}</p>
-                      <p className="text-gray-700"><span className="font-semibold">Price:</span> Rs. {selectedService.price}</p>
+                    <div className="grid md:grid-cols-2 gap-2 text-sm">
+                      <p className="text-gray-600"><span className="font-medium">Vendor:</span> {selectedService.vendorId?.name}</p>
+                      <p className="text-gray-600"><span className="font-medium">Service:</span> {selectedService.category}</p>
+                      <p className="text-gray-600"><span className="font-medium">Location:</span> {selectedService.location}</p>
+                      <p className="text-gray-600"><span className="font-medium">Price:</span> Rs. {selectedService.price}</p>
                     </div>
                   </div>
 
                   {error && (
-                    <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl flex items-center gap-2">
-                      <X size={20} />
+                    <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl flex items-center gap-2 text-sm">
+                      <X size={18} />
                       {error}
                     </div>
                   )}
 
                   <form onSubmit={handleBookingSubmit} className="space-y-4">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                        <User size={16} className="text-blue-600" />
+                      <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                        <User size={14} className="text-slate-900" />
                         Your Name *
                       </label>
                       <input
@@ -584,14 +581,14 @@ const Vendors = () => {
                         required
                         value={bookingForm.name}
                         onChange={(e) => setBookingForm({...bookingForm, name: e.target.value})}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all text-sm"
                         placeholder="Enter your full name"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                        <Mail size={16} className="text-blue-600" />
+                      <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                        <Mail size={14} className="text-slate-900" />
                         Email Address *
                       </label>
                       <input
@@ -599,14 +596,14 @@ const Vendors = () => {
                         required
                         value={bookingForm.email}
                         onChange={(e) => setBookingForm({...bookingForm, email: e.target.value})}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all text-sm"
                         placeholder="your.email@example.com"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                        <PhoneIcon size={16} className="text-blue-600" />
+                      <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                        <PhoneIcon size={14} className="text-slate-900" />
                         Phone Number *
                       </label>
                       <input
@@ -614,14 +611,14 @@ const Vendors = () => {
                         required
                         value={bookingForm.phone}
                         onChange={(e) => setBookingForm({...bookingForm, phone: e.target.value})}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all text-sm"
                         placeholder="+92 300 1234567"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                        <Home size={16} className="text-blue-600" />
+                      <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                        <Home size={14} className="text-slate-900" />
                         Address *
                       </label>
                       <input
@@ -629,21 +626,21 @@ const Vendors = () => {
                         required
                         value={bookingForm.address}
                         onChange={(e) => setBookingForm({...bookingForm, address: e.target.value})}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all text-sm"
                         placeholder="Your complete address"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                        <MessageSquare size={16} className="text-blue-600" />
+                      <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                        <MessageSquare size={14} className="text-slate-900" />
                         Additional Notes (Optional)
                       </label>
                       <textarea
                         value={bookingForm.notes}
                         onChange={(e) => setBookingForm({...bookingForm, notes: e.target.value})}
                         rows="3"
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all text-sm"
                         placeholder="Any specific requirements or details..."
                       />
                     </div>
@@ -652,23 +649,23 @@ const Vendors = () => {
                       <button
                         type="button"
                         onClick={closeModal}
-                        className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-bold hover:bg-gray-50 transition-all"
+                        className="flex-1 px-6 py-2.5 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-all text-sm"
                       >
                         Cancel
                       </button>
                       <button
                         type="submit"
                         disabled={bookingLoading}
-                        className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="flex-1 px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-medium transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
                       >
                         {bookingLoading ? (
                           <>
-                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
                             Submitting...
                           </>
                         ) : (
                           <>
-                            <CheckCircle size={20} />
+                            <CheckCircle size={16} />
                             Confirm Booking
                           </>
                         )}
@@ -678,39 +675,39 @@ const Vendors = () => {
                 </>
               ) : (
                 <div className="text-center py-8">
-                  <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <CheckCircle className="text-green-600" size={48} />
+                  <div className="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <CheckCircle className="text-emerald-600" size={40} />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Booking Confirmed!</h3>
-                  <p className="text-gray-600 mb-6">Your booking has been successfully created.</p>
+                  <h3 className="text-2xl font-semibold text-gray-900 mb-3">Booking Confirmed!</h3>
+                  <p className="text-gray-600 mb-6 text-sm">Your booking has been successfully created.</p>
                   
-                  <div className="bg-blue-50 rounded-xl p-6 mb-6 text-left border border-blue-200">
-                    <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                      <PhoneIcon size={20} className="text-blue-600" />
+                  <div className="bg-gray-50 rounded-xl p-6 mb-6 text-left border border-gray-200">
+                    <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2 text-sm">
+                      <PhoneIcon size={18} className="text-slate-900" />
                       Vendor Contact Information
                     </h4>
                     <div className="space-y-3">
                       <div className="flex items-center gap-3">
-                        <User size={18} className="text-gray-600" />
+                        <User size={16} className="text-gray-600" />
                         <div>
-                          <p className="text-xs text-gray-600 font-semibold">Name</p>
-                          <p className="text-sm font-bold text-gray-900">{bookingSuccess.vendorContact.name}</p>
+                          <p className="text-xs text-gray-500 font-medium">Name</p>
+                          <p className="text-sm font-semibold text-gray-900">{bookingSuccess.vendorContact.name}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <PhoneIcon size={18} className="text-green-600" />
+                        <PhoneIcon size={16} className="text-emerald-600" />
                         <div>
-                          <p className="text-xs text-gray-600 font-semibold">Phone</p>
-                          <a href={`tel:${bookingSuccess.vendorContact.phone}`} className="text-sm font-bold text-blue-600 hover:text-blue-700">
+                          <p className="text-xs text-gray-500 font-medium">Phone</p>
+                          <a href={`tel:${bookingSuccess.vendorContact.phone}`} className="text-sm font-semibold text-slate-900 hover:text-slate-700">
                             {bookingSuccess.vendorContact.phone}
                           </a>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Mail size={18} className="text-blue-600" />
+                        <Mail size={16} className="text-slate-900" />
                         <div>
-                          <p className="text-xs text-gray-600 font-semibold">Email</p>
-                          <a href={`mailto:${bookingSuccess.vendorContact.email}`} className="text-sm font-bold text-blue-600 hover:text-blue-700">
+                          <p className="text-xs text-gray-500 font-medium">Email</p>
+                          <a href={`mailto:${bookingSuccess.vendorContact.email}`} className="text-sm font-semibold text-slate-900 hover:text-slate-700">
                             {bookingSuccess.vendorContact.email}
                           </a>
                         </div>
@@ -720,7 +717,7 @@ const Vendors = () => {
 
                   <button
                     onClick={closeModal}
-                    className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg"
+                    className="w-full px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-medium transition-all shadow-sm"
                   >
                     Close
                   </button>

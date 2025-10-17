@@ -76,25 +76,25 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         {/* Logo/Header */}
         <div className="text-center mb-8">
           <div className={`${
             isAdmin 
-              ? 'bg-gradient-to-r from-blue-600 to-indigo-600' 
-              : 'bg-gradient-to-r from-green-600 to-emerald-600'
-          } w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl`}>
+              ? 'bg-slate-900' 
+              : 'bg-emerald-600'
+          } w-14 h-14 rounded-lg flex items-center justify-center mx-auto mb-5 shadow-sm`}>
             {isAdmin ? (
-              <Shield className="text-white" size={40} />
+              <Shield className="text-white" size={28} />
             ) : (
-              <Wrench className="text-white" size={40} />
+              <Wrench className="text-white" size={28} />
             )}
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl font-semibold text-gray-900 mb-1">
             {isAdmin ? 'Admin Login' : 'Vendor Login'}
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 text-sm">
             {isAdmin 
               ? 'Sign in to manage FixKar platform' 
               : 'Sign in to manage your services'}
@@ -102,25 +102,25 @@ const Login = () => {
         </div>
 
         {/* Login Form */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           {error && (
-            <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl flex items-center gap-2">
-              <AlertCircle size={20} />
+            <div className="mb-5 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg flex items-center gap-2 text-sm">
+              <AlertCircle size={18} />
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* Admin uses 'name', Vendor uses 'email' */}
             {isAdmin ? (
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   Admin Name
                 </label>
                 <div className="relative">
                   <User
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    size={20}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={18}
                   />
                   <input
                     type="text"
@@ -128,7 +128,7 @@ const Login = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
-                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-slate-900 transition-all text-sm"
                     placeholder="Enter admin name"
                     required
                   />
@@ -136,13 +136,13 @@ const Login = () => {
               </div>
             ) : (
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   Email Address
                 </label>
                 <div className="relative">
                   <User
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    size={20}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={18}
                   />
                   <input
                     type="email"
@@ -150,7 +150,7 @@ const Login = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
                     }
-                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 transition-all text-sm"
                     placeholder="Enter your email"
                     required
                   />
@@ -159,13 +159,13 @@ const Login = () => {
             )}
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 Password
               </label>
               <div className="relative">
                 <Lock
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
-                  size={20}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={18}
                 />
                 <input
                   type="password"
@@ -173,9 +173,9 @@ const Login = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
-                  className={`w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 ${
-                    isAdmin ? 'focus:ring-blue-500' : 'focus:ring-green-500'
-                  } focus:border-transparent transition-all`}
+                  className={`w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 ${
+                    isAdmin ? 'focus:ring-slate-900 focus:border-slate-900' : 'focus:ring-emerald-600 focus:border-emerald-600'
+                  } transition-all text-sm`}
                   placeholder="Enter password"
                   required
                 />
@@ -187,31 +187,31 @@ const Login = () => {
               disabled={loading}
               className={`w-full ${
                 isAdmin
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'
-                  : 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700'
-              } text-white py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2`}
+                  ? 'bg-slate-900 hover:bg-slate-800'
+                  : 'bg-emerald-600 hover:bg-emerald-700'
+              } text-white py-2.5 rounded-lg font-medium shadow-sm hover:shadow transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm mt-5`}
             >
               {loading ? (
                 <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                   Signing in...
                 </>
               ) : (
                 <>
-                  {isAdmin ? <Shield size={20} /> : <Wrench size={20} />}
+                  {isAdmin ? <Shield size={18} /> : <Wrench size={18} />}
                   Sign In as {isAdmin ? 'Admin' : 'Vendor'}
                 </>
               )}
             </button>
           </form>
 
-          <div className="mt-6 text-center space-y-3">
+          <div className="mt-5 text-center space-y-2">
             {isVendor && (
               <p className="text-gray-600 text-sm">
                 Don't have an account?{' '}
                 <button
                   onClick={() => navigate('/register')}
-                  className="text-green-600 hover:text-green-700 font-semibold"
+                  className="text-emerald-600 hover:text-emerald-700 font-medium"
                 >
                   Register as Vendor
                 </button>
@@ -220,15 +220,13 @@ const Login = () => {
             <button
               onClick={() => navigate('/')}
               className={`${
-                isAdmin ? 'text-blue-600 hover:text-blue-700' : 'text-green-600 hover:text-green-700'
-              } font-semibold text-sm`}
+                isAdmin ? 'text-slate-900 hover:text-slate-700' : 'text-emerald-600 hover:text-emerald-700'
+              } font-medium text-sm`}
             >
               ← Back to Home
             </button>
           </div>
         </div>
-
-       
       </div>
     </div>
   );

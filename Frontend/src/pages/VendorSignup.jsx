@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mail, Lock, User, Phone, MapPin, Eye, EyeOff, Briefcase } from "lucide-react";
+import { Mail, Lock, User, Phone, MapPin, Eye, EyeOff, Briefcase, AlertCircle } from "lucide-react";
 import { vendorAPI } from "../utils/api";
 
 const VendorSignup = () => {
@@ -28,20 +28,17 @@ const VendorSignup = () => {
 
     const { name, email, phone, category, location, password } = formData;
 
-    // Validation
     if (!name || !email || !phone || !category || !location || !password) {
       setError("Please fill all fields!");
       return;
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError("Please enter a valid email address!");
       return;
     }
 
-    // Password validation
     if (password.length < 6) {
       setError("Password must be at least 6 characters long!");
       return;
@@ -50,10 +47,7 @@ const VendorSignup = () => {
     setLoading(true);
 
     try {
-      // Vendor Registration API Call
       await vendorAPI.register(formData);
-      
-      // Success - show message and redirect to login
       alert("🎉 Vendor registered successfully! Please login to continue.");
       navigate("/login/vendor");
     } catch (err) {
@@ -65,160 +59,170 @@ const VendorSignup = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 px-4 py-12">
-      <div className="w-full max-w-md bg-white/80 backdrop-blur-xl border border-blue-100 shadow-2xl rounded-2xl p-8">
-        <h2 className="text-3xl font-bold text-center text-blue-700 mb-8 tracking-wide">
-          Vendor Signup
-        </h2>
+    <div className="min-h-screen flex justify-center items-center bg-gray-50 px-4 py-12">
+      <div className="w-full max-w-md bg-white border border-gray-200 shadow-sm rounded-3xl p-8">
+        <div className="text-center mb-8">
+          <div className="bg-emerald-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Briefcase className="text-white" size={32} />
+          </div>
+          <h2 className="text-3xl font-semibold text-gray-900 mb-2">
+            Vendor Registration
+          </h2>
+          <p className="text-gray-500 text-sm">
+            Join our platform and grow your business
+          </p>
+        </div>
 
-        <form onSubmit={handleSignup} className="space-y-5">
-          {/* Name */}
+        {error && (
+          <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl flex items-center gap-3 text-sm">
+            <AlertCircle size={18} className="flex-shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleSignup} className="space-y-4">
           <div>
-            <label className="block mb-1 font-semibold text-gray-700">
+            <label className="block mb-2 font-medium text-gray-700 text-sm">
               Full Name
             </label>
             <div className="relative">
-              <User className="absolute top-3 left-3 text-blue-400" size={18} />
+              <User className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400" size={18} />
               <input
                 type="text"
                 name="name"
                 placeholder="Enter your name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full pl-10 pr-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent transition-all bg-white text-gray-900"
                 disabled={loading}
               />
             </div>
           </div>
 
-          {/* Email */}
           <div>
-            <label className="block mb-1 font-semibold text-gray-700">
+            <label className="block mb-2 font-medium text-gray-700 text-sm">
               Email
             </label>
             <div className="relative">
-              <Mail className="absolute top-3 left-3 text-blue-400" size={18} />
+              <Mail className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400" size={18} />
               <input
                 type="email"
                 name="email"
                 placeholder="Enter your email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full pl-10 pr-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent transition-all bg-white text-gray-900"
                 disabled={loading}
               />
             </div>
           </div>
 
-          {/* Phone */}
           <div>
-            <label className="block mb-1 font-semibold text-gray-700">
+            <label className="block mb-2 font-medium text-gray-700 text-sm">
               Phone Number
             </label>
             <div className="relative">
-              <Phone className="absolute top-3 left-3 text-blue-400" size={18} />
+              <Phone className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400" size={18} />
               <input
                 type="tel"
                 name="phone"
                 placeholder="Enter your phone number"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full pl-10 pr-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent transition-all bg-white text-gray-900"
                 disabled={loading}
               />
             </div>
           </div>
 
-          {/* Category */}
           <div>
-            <label className="block mb-1 font-semibold text-gray-700">
+            <label className="block mb-2 font-medium text-gray-700 text-sm">
               Service Category
             </label>
             <div className="relative">
-              <Briefcase className="absolute top-3 left-3 text-blue-400" size={18} />
+              <Briefcase className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400" size={18} />
               <input
                 type="text"
                 name="category"
                 placeholder="e.g. Plumber, Electrician, Mechanic"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full pl-10 pr-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent transition-all bg-white text-gray-900"
                 disabled={loading}
               />
             </div>
           </div>
 
-          {/* Location */}
           <div>
-            <label className="block mb-1 font-semibold text-gray-700">
+            <label className="block mb-2 font-medium text-gray-700 text-sm">
               Location
             </label>
             <div className="relative">
-              <MapPin className="absolute top-3 left-3 text-blue-400" size={18} />
+              <MapPin className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400" size={18} />
               <input
                 type="text"
                 name="location"
                 placeholder="Enter your service area"
                 value={formData.location}
                 onChange={handleChange}
-                className="w-full pl-10 pr-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent transition-all bg-white text-gray-900"
                 disabled={loading}
               />
             </div>
           </div>
 
-          {/* Password */}
           <div>
-            <label className="block mb-1 font-semibold text-gray-700">
+            <label className="block mb-2 font-medium text-gray-700 text-sm">
               Password
             </label>
             <div className="relative">
-              <Lock className="absolute top-3 left-3 text-blue-400" size={18} />
+              <Lock className="absolute top-1/2 -translate-y-1/2 left-4 text-gray-400" size={18} />
               <input
                 type={showPass ? "text" : "password"}
                 name="password"
                 placeholder="Enter your password (min. 6 characters)"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full pl-10 pr-10 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full pl-11 pr-11 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent transition-all bg-white text-gray-900"
                 disabled={loading}
               />
-              <div
-                className="absolute right-3 top-3 text-blue-400 cursor-pointer"
+              <button
+                type="button"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 onClick={() => setShowPass(!showPass)}
               >
                 {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
-              </div>
+              </button>
             </div>
           </div>
 
-          {/* Error */}
-          {error && (
-            <p className="text-red-500 text-sm font-medium text-center">
-              {error}
-            </p>
-          )}
-
-          {/* Signup Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow-md transition-all duration-200 disabled:bg-blue-400 disabled:cursor-not-allowed"
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3.5 rounded-xl shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-6"
           >
-            {loading ? "Signing up..." : "Sign Up"}
+            {loading ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                <span>Signing up...</span>
+              </>
+            ) : (
+              <span>Sign Up</span>
+            )}
           </button>
         </form>
 
-        {/* Login Link */}
-        <p className="text-sm text-center mt-5 text-gray-700">
-          Already have an account?{" "}
-          <span
-            className="text-blue-600 font-semibold cursor-pointer hover:underline"
-            onClick={() => navigate("/login/vendor")}
-          >
-            Login Here
-          </span>
-        </p>
+        <div className="mt-8 pt-6 border-t border-gray-200 text-center">
+          <p className="text-sm text-gray-600">
+            Already have an account?{" "}
+            <button
+              onClick={() => navigate("/login/vendor")}
+              className="text-emerald-600 font-medium hover:text-emerald-700 transition-colors"
+            >
+              Login Here
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   );

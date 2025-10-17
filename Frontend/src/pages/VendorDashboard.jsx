@@ -13,7 +13,7 @@ const VendorDashboard = () => {
     earnings: 0,
     activeServices: 0
   });
-  const [vendorStatus, setVendorStatus] = useState('available'); // available or busy
+  const [vendorStatus, setVendorStatus] = useState('available');
   const [showAddForm, setShowAddForm] = useState(false);
   const [newService, setNewService] = useState({
     category: "",
@@ -47,20 +47,17 @@ const VendorDashboard = () => {
     try {
       setLoading(true);
       
-      // Fetch vendor profile (includes status)
       const profileRes = await fetch(`${API_BASE_URL}/vendors/profile`, {
         headers: getAuthHeaders()
       });
       const profileData = await profileRes.json();
       setVendorStatus(profileData.availabilityStatus || 'available');
       
-      // Fetch vendor services
       const servicesRes = await fetch(`${API_BASE_URL}/vendors/services`, {
         headers: getAuthHeaders()
       });
       const servicesData = await servicesRes.json();
       
-      // Fetch vendor stats
       const statsRes = await fetch(`${API_BASE_URL}/vendors/stats`, {
         headers: getAuthHeaders()
       });
@@ -175,19 +172,19 @@ const VendorDashboard = () => {
   const getStatusBadge = (status) => {
     switch (status) {
       case 'Approved':
-        return <span className="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-1">
-          <CheckCircle size={16} /> Approved
+        return <span className="bg-green-50 text-green-700 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 border border-green-200">
+          <CheckCircle size={14} /> Approved
         </span>;
       case 'Pending':
-        return <span className="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-1">
-          <Clock size={16} /> Pending Approval
+        return <span className="bg-amber-50 text-amber-700 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 border border-amber-200">
+          <Clock size={14} /> Pending
         </span>;
       case 'Disapproved':
-        return <span className="bg-red-100 text-red-700 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-1">
-          <XCircle size={16} /> Disapproved
+        return <span className="bg-red-50 text-red-700 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 border border-red-200">
+          <XCircle size={14} /> Disapproved
         </span>;
       default:
-        return <span className="bg-gray-100 text-gray-700 px-4 py-2 rounded-full text-sm font-bold">
+        return <span className="bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-medium border border-gray-200">
           {status}
         </span>;
     }
@@ -195,10 +192,10 @@ const VendorDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-green-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg">Loading dashboard...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -211,59 +208,52 @@ const VendorDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         
-        {/* Alert Messages */}
         {error && (
-          <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl flex items-center gap-2">
-            <AlertCircle size={20} />
+          <div className="mb-4 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg flex items-center gap-2 text-sm">
+            <AlertCircle size={18} />
             {error}
-            <button onClick={() => setError('')} className="ml-auto">×</button>
+            <button onClick={() => setError('')} className="ml-auto text-lg">×</button>
           </div>
         )}
         
         {success && (
-          <div className="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl flex items-center gap-2">
-            <CheckCircle size={20} />
+          <div className="mb-4 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg flex items-center gap-2 text-sm">
+            <CheckCircle size={18} />
             {success}
-            <button onClick={() => setSuccess('')} className="ml-auto">×</button>
+            <button onClick={() => setSuccess('')} className="ml-auto text-lg">×</button>
           </div>
         )}
 
-        {/* Welcome Banner with Availability Toggle */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-green-600 via-emerald-600 to-teal-700 rounded-3xl p-8 mb-8 shadow-2xl">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
-          
-          <div className="relative flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="mb-4 md:mb-0">
-              <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">
-                <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
-                  <Wrench className="text-white" size={32} />
-                </div>
-                Welcome Back, Vendor! 👋
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900 mb-1 flex items-center gap-2">
+                <Wrench className="text-emerald-600" size={28} />
+                Vendor Dashboard
               </h1>
-              <p className="text-green-100 text-lg">Manage your services and track your performance</p>
+              <p className="text-gray-600 text-sm">Manage your services and track performance</p>
             </div>
             
-            <div className="flex gap-3">
-              {/* Availability Toggle */}
+            <div className="flex gap-2">
               <button
                 onClick={toggleAvailability}
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all shadow-lg ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm ${
                   vendorStatus === 'available' 
-                    ? 'bg-green-500 hover:bg-green-600 text-white' 
-                    : 'bg-yellow-500 hover:bg-yellow-600 text-white'
+                    ? 'bg-green-600 hover:bg-green-700 text-white' 
+                    : 'bg-amber-500 hover:bg-amber-600 text-white'
                 }`}
               >
                 {vendorStatus === 'available' ? (
                   <>
-                    <Wifi size={20} />
+                    <Wifi size={16} />
                     Available
                   </>
                 ) : (
                   <>
-                    <WifiOff size={20} />
+                    <WifiOff size={16} />
                     Busy
                   </>
                 )}
@@ -271,91 +261,87 @@ const VendorDashboard = () => {
 
               <button
                 onClick={() => setShowAddForm(!showAddForm)}
-                className="flex items-center gap-2 bg-white text-green-600 px-6 py-3 rounded-xl font-bold hover:bg-green-50 transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition-all text-sm"
               >
-                <PlusCircle size={20} />
+                <PlusCircle size={16} />
                 Add Service
               </button>
             </div>
           </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500 hover:shadow-xl transition-all">
-            <div className="flex items-center justify-between mb-4">
-              <div className="bg-blue-100 p-3 rounded-xl">
-                <Calendar className="text-blue-600" size={28} />
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-200">
+            <div className="flex items-center justify-between mb-3">
+              <div className="bg-blue-50 p-2 rounded-lg">
+                <Calendar className="text-blue-600" size={20} />
               </div>
-              <TrendingUp className="text-green-500" size={20} />
+              <TrendingUp className="text-green-500" size={16} />
             </div>
-            <p className="text-gray-600 text-sm font-medium mb-1">Total Bookings</p>
-            <p className="text-3xl font-bold text-gray-800">{stats.totalBookings}</p>
-            <p className="text-green-600 text-sm mt-2 font-semibold">↑ 12% this month</p>
+            <p className="text-gray-600 text-xs font-medium mb-1">Total Bookings</p>
+            <p className="text-2xl font-semibold text-gray-900">{stats.totalBookings}</p>
+            <p className="text-green-600 text-xs mt-1">↑ 12% this month</p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-yellow-500 hover:shadow-xl transition-all">
-            <div className="flex items-center justify-between mb-4">
-              <div className="bg-yellow-100 p-3 rounded-xl">
-                <Star className="text-yellow-600 fill-yellow-600" size={28} />
+          <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-200">
+            <div className="flex items-center justify-between mb-3">
+              <div className="bg-amber-50 p-2 rounded-lg">
+                <Star className="text-amber-600 fill-amber-600" size={20} />
               </div>
-              <Award className="text-yellow-500" size={20} />
+              <Award className="text-amber-500" size={16} />
             </div>
-            <p className="text-gray-600 text-sm font-medium mb-1">Rating</p>
-            <p className="text-3xl font-bold text-gray-800">{stats.rating}</p>
-            <p className="text-gray-600 text-sm mt-2">Based on {stats.reviews || 0} reviews</p>
+            <p className="text-gray-600 text-xs font-medium mb-1">Rating</p>
+            <p className="text-2xl font-semibold text-gray-900">{stats.rating}</p>
+            <p className="text-gray-500 text-xs mt-1">{stats.reviews || 0} reviews</p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition-all">
-            <div className="flex items-center justify-between mb-4">
-              <div className="bg-green-100 p-3 rounded-xl">
-                <DollarSign className="text-green-600" size={28} />
+          <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-200">
+            <div className="flex items-center justify-between mb-3">
+              <div className="bg-green-50 p-2 rounded-lg">
+                <DollarSign className="text-green-600" size={20} />
               </div>
-              <TrendingUp className="text-green-500" size={20} />
+              <TrendingUp className="text-green-500" size={16} />
             </div>
-            <p className="text-gray-600 text-sm font-medium mb-1">Total Earnings</p>
-            <p className="text-3xl font-bold text-gray-800">Rs. {stats.earnings?.toLocaleString() || 0}</p>
-            <p className="text-green-600 text-sm mt-2 font-semibold">↑ 8% increase</p>
+            <p className="text-gray-600 text-xs font-medium mb-1">Total Earnings</p>
+            <p className="text-2xl font-semibold text-gray-900">Rs. {stats.earnings?.toLocaleString() || 0}</p>
+            <p className="text-green-600 text-xs mt-1">↑ 8% increase</p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-purple-500 hover:shadow-xl transition-all">
-            <div className="flex items-center justify-between mb-4">
-              <div className="bg-purple-100 p-3 rounded-xl">
-                <Users className="text-purple-600" size={28} />
+          <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-200">
+            <div className="flex items-center justify-between mb-3">
+              <div className="bg-purple-50 p-2 rounded-lg">
+                <Users className="text-purple-600" size={20} />
               </div>
-              <CheckCircle className="text-purple-500" size={20} />
+              <CheckCircle className="text-purple-500" size={16} />
             </div>
-            <p className="text-gray-600 text-sm font-medium mb-1">Active Services</p>
-            <p className="text-3xl font-bold text-gray-800">{stats.activeServices}</p>
-            <p className="text-gray-600 text-sm mt-2">Approved services</p>
+            <p className="text-gray-600 text-xs font-medium mb-1">Active Services</p>
+            <p className="text-2xl font-semibold text-gray-900">{stats.activeServices}</p>
+            <p className="text-gray-500 text-xs mt-1">Approved services</p>
           </div>
         </div>
 
-        {/* Add Service Form */}
         {showAddForm && (
-          <div className="bg-white rounded-2xl shadow-2xl p-8 mb-8 border border-gray-200">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
-                <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-3 rounded-xl">
-                  <PlusCircle className="text-white" size={24} />
-                </div>
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-6 border border-gray-200">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                <PlusCircle className="text-emerald-600" size={24} />
                 Add New Service
               </h2>
               <button
                 onClick={() => setShowAddForm(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors text-2xl"
+                className="text-gray-400 hover:text-gray-600 transition-colors text-xl"
               >
                 ✕
               </button>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Service Category *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Service Category *</label>
                 <select
                   value={newService.category}
                   onChange={(e) => setNewService({ ...newService, category: e.target.value })}
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
                 >
                   <option value="">Select Category</option>
                   <option value="Plumbing">Plumbing</option>
@@ -370,68 +356,68 @@ const VendorDashboard = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Location *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Location *</label>
                 <input
                   type="text"
                   placeholder="e.g., Karachi, Clifton"
                   value={newService.location}
                   onChange={(e) => setNewService({ ...newService, location: e.target.value })}
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Contact Number *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Contact Number *</label>
                 <input
                   type="text"
                   placeholder="+92-300-1234567"
                   value={newService.contact}
                   onChange={(e) => setNewService({ ...newService, contact: e.target.value })}
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Experience *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Experience *</label>
                 <input
                   type="text"
                   placeholder="e.g., 5 years"
                   value={newService.experience}
                   onChange={(e) => setNewService({ ...newService, experience: e.target.value })}
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Availability *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Availability *</label>
                 <input
                   type="text"
                   placeholder="e.g., 9am - 6pm"
                   value={newService.availability}
                   onChange={(e) => setNewService({ ...newService, availability: e.target.value })}
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Price Range (Rs.) *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Price Range (Rs.) *</label>
                 <input
                   type="text"
                   placeholder="e.g., 500-1500"
                   value={newService.price}
                   onChange={(e) => setNewService({ ...newService, price: e.target.value })}
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
                 />
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Service Description</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Service Description</label>
                 <textarea
                   placeholder="Describe your service and expertise..."
                   value={newService.description}
                   onChange={(e) => setNewService({ ...newService, description: e.target.value })}
-                  rows="4"
-                  className="w-full border-2 border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                  rows="3"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
                 />
               </div>
             </div>
@@ -439,16 +425,16 @@ const VendorDashboard = () => {
             <button
               onClick={handleAddService}
               disabled={submitting}
-              className="mt-6 w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-4 rounded-xl font-bold hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
+              className="mt-5 w-full bg-emerald-600 text-white px-4 py-2.5 rounded-lg font-medium hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
             >
               {submitting ? (
                 <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                   Submitting...
                 </>
               ) : (
                 <>
-                  <Save className="group-hover:scale-110 transition-transform" size={20} />
+                  <Save size={16} />
                   Save Service
                 </>
               )}
@@ -456,98 +442,84 @@ const VendorDashboard = () => {
           </div>
         )}
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Services List */}
+        <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
-                <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-lg">
-                  <Wrench className="text-white" size={24} />
-                </div>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <Wrench className="text-emerald-600" size={20} />
                 Your Services
               </h2>
-              <span className="bg-green-100 text-green-700 px-4 py-2 rounded-full font-bold text-sm">
+              <span className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-lg font-medium text-xs border border-emerald-200">
                 {services.length} Total
               </span>
             </div>
 
             {services.length === 0 ? (
-              <div className="bg-white rounded-2xl shadow-lg p-12 text-center border-2 border-dashed border-gray-300">
-                <div className="bg-gray-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Wrench className="text-gray-400" size={40} />
+              <div className="bg-white rounded-lg shadow-sm p-12 text-center border border-gray-200">
+                <div className="bg-gray-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Wrench className="text-gray-400" size={32} />
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">No Services Added Yet</h3>
-                <p className="text-gray-600 mb-6">Start by adding your first service to get bookings!</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">No Services Added Yet</h3>
+                <p className="text-gray-600 mb-5 text-sm">Start by adding your first service to get bookings</p>
                 <button
                   onClick={() => setShowAddForm(true)}
-                  className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-xl font-bold hover:from-green-700 hover:to-emerald-700 transition-all inline-flex items-center gap-2"
+                  className="bg-emerald-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-emerald-700 transition-all inline-flex items-center gap-2 text-sm"
                 >
-                  <PlusCircle size={20} />
+                  <PlusCircle size={16} />
                   Add Your First Service
                 </button>
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {services.map((srv) => (
-                  <div key={srv._id} className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all border border-gray-100 group">
+                  <div key={srv._id} className="bg-white rounded-lg shadow-sm p-5 border border-gray-200">
                     <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-4">
-                        <div className="bg-gradient-to-br from-green-500 to-emerald-600 p-4 rounded-xl shadow-lg">
-                          <Wrench className="text-white" size={28} />
+                      <div className="flex items-center gap-3">
+                        <div className="bg-emerald-600 p-2.5 rounded-lg">
+                          <Wrench className="text-white" size={20} />
                         </div>
                         <div>
-                          <h3 className="text-xl font-bold text-gray-800">{srv.category}</h3>
-                          <p className="text-sm text-gray-600">{srv.experience} experience</p>
+                          <h3 className="text-lg font-semibold text-gray-900">{srv.category}</h3>
+                          <p className="text-xs text-gray-600">{srv.experience} experience</p>
                         </div>
                       </div>
                       <div className="flex gap-2 items-center">
                         {getStatusBadge(srv.status)}
                         <button 
                           onClick={() => handleDeleteService(srv._id)}
-                          className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                          className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors border border-red-200"
                         >
-                          <Trash2 size={18} />
+                          <Trash2 size={16} />
                         </button>
                       </div>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-4 mb-4">
-                      <div className="flex items-center gap-3 text-gray-700">
-                        <div className="bg-blue-50 p-2 rounded-lg">
-                          <MapPin className="text-blue-600" size={18} />
-                        </div>
-                        <span className="text-sm font-medium">{srv.location}</span>
+                    <div className="grid md:grid-cols-2 gap-3 mb-3">
+                      <div className="flex items-center gap-2 text-gray-700">
+                        <MapPin className="text-blue-600" size={16} />
+                        <span className="text-sm">{srv.location}</span>
                       </div>
-
-                      <div className="flex items-center gap-3 text-gray-700">
-                        <div className="bg-green-50 p-2 rounded-lg">
-                          <Phone className="text-green-600" size={18} />
-                        </div>
-                        <span className="text-sm font-medium">{srv.contact}</span>
+                      <div className="flex items-center gap-2 text-gray-700">
+                        <Phone className="text-green-600" size={16} />
+                        <span className="text-sm">{srv.contact}</span>
                       </div>
-
-                      <div className="flex items-center gap-3 text-gray-700">
-                        <div className="bg-purple-50 p-2 rounded-lg">
-                          <Clock className="text-purple-600" size={18} />
-                        </div>
-                        <span className="text-sm font-medium">{srv.availability}</span>
+                      <div className="flex items-center gap-2 text-gray-700">
+                        <Clock className="text-purple-600" size={16} />
+                        <span className="text-sm">{srv.availability}</span>
                       </div>
-
-                      <div className="flex items-center gap-3 text-gray-700">
-                        <div className="bg-orange-50 p-2 rounded-lg">
-                          <DollarSign className="text-orange-600" size={18} />
-                        </div>
-                        <span className="text-sm font-medium">Rs. {srv.price}</span>
+                      <div className="flex items-center gap-2 text-gray-700">
+                        <DollarSign className="text-orange-600" size={16} />
+                        <span className="text-sm">Rs. {srv.price}</span>
                       </div>
                     </div>
 
                     {srv.description && (
-                      <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                        <p className="text-sm text-gray-700 leading-relaxed">{srv.description}</p>
+                      <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                        <p className="text-xs text-gray-700 leading-relaxed">{srv.description}</p>
                       </div>
                     )}
 
-                    <div className="mt-4 pt-4 border-t border-gray-200">
+                    <div className="mt-3 pt-3 border-t border-gray-200">
                       <p className="text-xs text-gray-500">
                         Submitted: {new Date(srv.createdAt).toLocaleString()}
                       </p>
@@ -558,37 +530,34 @@ const VendorDashboard = () => {
             )}
           </div>
 
-          {/* Recent Bookings Sidebar */}
           <div className="lg:col-span-1">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-              <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-2 rounded-lg">
-                <Calendar className="text-white" size={24} />
-              </div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <Calendar className="text-purple-600" size={20} />
               Recent Bookings
             </h2>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {recentBookings.map((booking) => (
-                <div key={booking.id} className="bg-white rounded-2xl shadow-lg p-5 hover:shadow-xl transition-all border border-gray-100">
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-bold text-gray-800">{booking.customer}</h4>
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                      booking.status === 'completed' ? 'bg-green-100 text-green-700' :
-                      booking.status === 'in-progress' ? 'bg-blue-100 text-blue-700' :
-                      'bg-orange-100 text-orange-700'
+                <div key={booking.id} className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-semibold text-gray-900 text-sm">{booking.customer}</h4>
+                    <span className={`px-2 py-1 rounded-md text-xs font-medium ${
+                      booking.status === 'completed' ? 'bg-green-50 text-green-700 border border-green-200' :
+                      booking.status === 'in-progress' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
+                      'bg-amber-50 text-amber-700 border border-amber-200'
                     }`}>
                       {booking.status}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600 mb-2">{booking.service}</p>
-                  <div className="flex items-center justify-between text-sm">
+                  <p className="text-xs text-gray-600 mb-2">{booking.service}</p>
+                  <div className="flex items-center justify-between text-xs">
                     <span className="text-gray-500">{booking.date}</span>
-                    <span className="text-green-600 font-bold">Rs. {booking.amount}</span>
+                    <span className="text-green-600 font-semibold">Rs. {booking.amount}</span>
                   </div>
                 </div>
               ))}
 
-              <button className="w-full bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 py-3 rounded-xl font-bold hover:from-green-200 hover:to-emerald-200 transition-all">
+              <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-lg font-medium transition-all text-sm">
                 View All Bookings
               </button>
             </div>
