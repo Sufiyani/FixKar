@@ -1,9 +1,5 @@
 # 🌐 Fikar – Vendor Booking Platform (MERN Stack)
 
-![MERN](https://img.shields.io/badge/Stack-MERN-green)
-![License](https://img.shields.io/badge/License-MIT-blue)
-![Status](https://img.shields.io/badge/Status-Active-success)
-
 ## 📖 Overview
 
 **Fikar** is a full-stack **MERN** (MongoDB, Express, React, Node) web application that allows users to **browse and book vendors** for different services.  
@@ -55,7 +51,7 @@ git clone https://github.com/yourusername/fikar.git
 cd fixKar
 ```
 
-**Install dependencies**
+### Install dependencies
 
 For backend:
 ```bash
@@ -69,7 +65,7 @@ cd Frontend
 npm install
 ```
 
-**Set up environment variables**
+### Set up environment variables
 Create a .env file in your Backend folder and add:
 
 ```bash
@@ -78,7 +74,7 @@ MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 ```
 
-**Run the development servers**
+### Run the development servers
 
 Start backend:
 
@@ -97,7 +93,7 @@ Open your browser and visit:
 http://localhost:5173
 ```
 
-**🧩 Folder Structure**
+### 🧩 Folder Structure
 ```bash
 Fikar/
 ├── Backend/
@@ -119,14 +115,14 @@ Fikar/
 └── README.md
 ```
 
-**🔐 Roles Summary**
+### 🔐 Roles Summary
 | Role       | Access                        | Description                                      |
 | ---------- | ----------------------------- | ------------------------------------------------ |
 | **User**   | Browse, book vendors          | Interacts with services and vendors              |
 | **Vendor** | Add services                  | Waits for admin approval                         |
 | **Admin**  | Approve/Disapprove, View data | Controls visibility and manages vendors/bookings |
 
-🧠 Future Enhancements
+### 🧠 Future Enhancements
 
 Email/SMS notifications for approvals and bookings.
 
@@ -136,7 +132,7 @@ Payment gateway integration.
 
 Analytics and reporting for admin.
 
-**👨‍💻 Developer**
+### 👨‍💻 Developer 
 
 **Sufiyan Imran**  
 *Frontend Developer | MERN Stack*  
