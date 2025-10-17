@@ -1,8 +1,8 @@
-# 🌐 Fikar – Vendor Booking Platform (MERN Stack)
+# 🌐 FixKar – Vendor Booking Platform (MERN Stack)
 
 ## 📖 Overview
 
-**Fikar** is a full-stack **MERN** (MongoDB, Express, React, Node) web application that allows users to **browse and book vendors** for different services.  
+**FixKar** is a full-stack **MERN** (MongoDB, Express, React, Node) web application that allows users to **browse and book vendors** for different services.  
 Vendors can **register, log in, and add their services**, which are displayed publicly **only after admin approval**.  
 Admins have full control to **approve or disapprove vendor services** and can also **view all vendors and booking details** in their dashboard.
 
@@ -95,7 +95,7 @@ http://localhost:5173
 
 ### 🧩 Folder Structure
 ```bash
-Fikar/
+FixKar/
 ├── Backend/
 │   ├── controllers/
 │   ├── models/
