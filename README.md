@@ -55,7 +55,7 @@ git clone https://github.com/yourusername/fikar.git
 cd fixKar
 ```
 
-Install dependencies
+**Install dependencies**
 
 For backend:
 ```bash
@@ -69,7 +69,7 @@ cd Frontend
 npm install
 ```
 
-Set up environment variables
+**Set up environment variables**
 Create a .env file in your Backend folder and add:
 
 ```bash
@@ -78,7 +78,7 @@ MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 ```
 
-Run the development servers
+**Run the development servers**
 
 Start backend:
 
@@ -97,7 +97,7 @@ Open your browser and visit:
 http://localhost:5173
 ```
 
-🧩 Folder Structure
+**🧩 Folder Structure**
 ```bash
 Fikar/
 ├── Backend/
@@ -119,11 +119,13 @@ Fikar/
 └── README.md
 ```
 
-🔐 Roles Summary
-Role	Access	Description
-User	Browse, book vendors	Interacts with services and vendors
-Vendor	Add services	Waits for admin approval
-Admin	Approve/Disapprove, View data	Controls visibility and manages vendors/bookings
+**🔐 Roles Summary**
+| Role       | Access                        | Description                                      |
+| ---------- | ----------------------------- | ------------------------------------------------ |
+| **User**   | Browse, book vendors          | Interacts with services and vendors              |
+| **Vendor** | Add services                  | Waits for admin approval                         |
+| **Admin**  | Approve/Disapprove, View data | Controls visibility and manages vendors/bookings |
+
 🧠 Future Enhancements
 
 Email/SMS notifications for approvals and bookings.
@@ -134,10 +136,11 @@ Payment gateway integration.
 
 Analytics and reporting for admin.
 
-👨‍💻 Developer
+**👨‍💻 Developer**
 
-Developed by: Sufiyan Imran
+**Sufiyan Imran**  
+*Frontend Developer | MERN Stack*  
 
-📍 Karachi, Pakistan
-🌐 GitHub: sufiyanimran
-💼 LinkedIn: sufiyanimran
+📧 **Email:** sufiyanimran55@gmail.com  
+🐙 **GitHub:** [sufiyanimran](https://github.com/Sufiyani)  
+💼 **LinkedIn:** [sufiyanimran](https://www.linkedin.com/in/sufiyanimran/) 
