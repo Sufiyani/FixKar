@@ -88,7 +88,7 @@ export const getPendingServices = async (req, res) => {
   }
 };
 
-// ✅ Approve Service
+// ✅ Approve Service - Updates vendor status to "Approved"
 export const approveService = async (req, res) => {
   try {
     const service = await Service.findByIdAndUpdate(
@@ -101,19 +101,41 @@ export const approveService = async (req, res) => {
       return res.status(404).json({ message: "Service not found" });
     }
 
+    // Update vendor status to "Approved" if this is their first approved service
+    await Vendor.findByIdAndUpdate(
+      service.vendorId,
+      { status: "Approved" },
+      { new: true }
+    );
+
     res.json({ message: "Service approved successfully", service });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// ✅ Disapprove Service (Delete)
+// ✅ Disapprove Service - Deletes service and updates vendor status if needed
 export const disapproveService = async (req, res) => {
   try {
     const service = await Service.findByIdAndDelete(req.params.id);
 
     if (!service) {
       return res.status(404).json({ message: "Service not found" });
+    }
+
+    // Check if vendor has any other approved services
+    const remainingApprovedServices = await Service.countDocuments({
+      vendorId: service.vendorId,
+      status: "Approved"
+    });
+
+    // If no approved services remain, set vendor status back to "Pending"
+    if (remainingApprovedServices === 0) {
+      await Vendor.findByIdAndUpdate(
+        service.vendorId,
+        { status: "Pending" },
+        { new: true }
+      );
     }
 
     res.json({ message: "Service disapproved and deleted" });
@@ -135,10 +157,11 @@ export const getApprovedServices = async (req, res) => {
   }
 };
 
-// ✅ Get All Vendors
+// ✅ Get All Vendors - Only returns vendors with at least one approved service
 export const getAllVendors = async (req, res) => {
   try {
-    const vendors = await Vendor.find().select("-password");
+    // Only return vendors with status "Approved" (i.e., vendors with approved services)
+    const vendors = await Vendor.find({ status: "Approved" }).select("-password");
     res.json(vendors);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -154,6 +177,7 @@ export const deleteVendor = async (req, res) => {
       return res.status(404).json({ message: "Vendor not found" });
     }
 
+    // Delete all services by this vendor
     await Service.deleteMany({ vendorId: req.params.id });
 
     res.json({ message: "Vendor and their services deleted successfully" });
@@ -177,12 +201,20 @@ export const getAllBookings = async (req, res) => {
   }
 };
 
-// ✅ Get Admin Stats
+// ✅ Get Admin Stats - Only counts approved vendors
 export const getAdminStats = async (req, res) => {
   try {
-    const totalVendors = await Vendor.countDocuments();
-    const availableVendors = await Vendor.countDocuments({ availabilityStatus: "available" });
-    const busyVendors = await Vendor.countDocuments({ availabilityStatus: "busy" });
+    // Only count vendors with status "Approved"
+    const totalVendors = await Vendor.countDocuments({ status: "Approved" });
+    const availableVendors = await Vendor.countDocuments({ 
+      status: "Approved",
+      availabilityStatus: "available" 
+    });
+    const busyVendors = await Vendor.countDocuments({ 
+      status: "Approved",
+      availabilityStatus: "busy" 
+    });
+    
     const pendingServices = await Service.countDocuments({ status: "Pending" });
     const approvedServices = await Service.countDocuments({ status: "Approved" });
     const totalServices = await Service.countDocuments();

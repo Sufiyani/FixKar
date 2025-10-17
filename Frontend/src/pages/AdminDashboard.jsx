@@ -90,6 +90,9 @@ const AdminDashboard = () => {
         });
         setSelectedService(null);
         setTimeout(() => setSuccess(''), 3000);
+        
+        // Refresh data to update vendor status
+        fetchData();
       } else {
         setError(data.message || 'Failed to approve service');
       }
@@ -124,6 +127,9 @@ const AdminDashboard = () => {
         });
         setSelectedService(null);
         setTimeout(() => setSuccess(''), 3000);
+        
+        // Refresh data to update vendor list
+        fetchData();
       } else {
         setError(data.message || 'Failed to disapprove service');
       }
@@ -498,56 +504,66 @@ const AdminDashboard = () => {
               </button>
             </div>
 
-            <div className="space-y-4">
-              {filteredVendors.map((vendor) => (
-                <div key={vendor._id} className="border-2 border-gray-200 rounded-xl p-6 hover:border-blue-300 transition-all">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-3">
-                        <h3 className="text-xl font-bold text-gray-900">{vendor.name}</h3>
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                          vendor.availabilityStatus === 'available' 
-                            ? 'bg-green-100 text-green-700 flex items-center gap-1' 
-                            : 'bg-orange-100 text-orange-700 flex items-center gap-1'
-                        }`}>
-                          {vendor.availabilityStatus === 'available' ? (
-                            <><Wifi size={12} /> Available</>
-                          ) : (
-                            <><WifiOff size={12} /> Busy</>
-                          )}
-                        </span>
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                          vendor.status === 'Approved' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                        }`}>
-                          {vendor.status}
-                        </span>
-                      </div>
-                      <div className="grid md:grid-cols-3 gap-4">
-                        <div className="flex items-center gap-2 text-gray-700">
-                          <Mail size={16} className="text-blue-600" />
-                          <span className="text-sm">{vendor.email}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-gray-700">
-                          <Phone size={16} className="text-green-600" />
-                          <span className="text-sm">{vendor.phone}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-gray-700">
-                          <MapPin size={16} className="text-red-600" />
-                          <span className="text-sm">{vendor.location}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleDeleteVendor(vendor._id, vendor.name)}
-                      className="ml-4 p-3 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg transition-all flex items-center gap-2 font-semibold"
-                    >
-                      <Trash2 size={18} />
-                      Delete
-                    </button>
-                  </div>
+            {filteredVendors.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="bg-gray-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="text-gray-400" size={40} />
                 </div>
-              ))}
-            </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">No Vendors Found</h3>
+                <p className="text-gray-600">No vendors match your search criteria</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredVendors.map((vendor) => (
+                  <div key={vendor._id} className="border-2 border-gray-200 rounded-xl p-6 hover:border-blue-300 transition-all">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-3">
+                          <h3 className="text-xl font-bold text-gray-900">{vendor.name}</h3>
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                            vendor.availabilityStatus === 'available' 
+                              ? 'bg-green-100 text-green-700 flex items-center gap-1' 
+                              : 'bg-orange-100 text-orange-700 flex items-center gap-1'
+                          }`}>
+                            {vendor.availabilityStatus === 'available' ? (
+                              <><Wifi size={12} /> Available</>
+                            ) : (
+                              <><WifiOff size={12} /> Busy</>
+                            )}
+                          </span>
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                            vendor.status === 'Approved' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                          }`}>
+                            {vendor.status}
+                          </span>
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-4">
+                          <div className="flex items-center gap-2 text-gray-700">
+                            <Mail size={16} className="text-blue-600" />
+                            <span className="text-sm">{vendor.email}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-gray-700">
+                            <Phone size={16} className="text-green-600" />
+                            <span className="text-sm">{vendor.phone}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-gray-700">
+                            <MapPin size={16} className="text-red-600" />
+                            <span className="text-sm">{vendor.location}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteVendor(vendor._id, vendor.name)}
+                        className="ml-4 p-3 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg transition-all flex items-center gap-2 font-semibold"
+                      >
+                        <Trash2 size={18} />
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

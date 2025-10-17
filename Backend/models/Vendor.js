@@ -31,7 +31,7 @@ const vendorSchema = mongoose.Schema(
     status: {
       type: String,
       enum: ["Pending", "Approved", "Disapproved"],
-      default: "Approved",
+      default: "Disapproved",
     },
     availabilityStatus: {
       type: String,

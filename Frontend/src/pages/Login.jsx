@@ -228,11 +228,7 @@ const Login = () => {
           </div>
         </div>
 
-        {isAdmin && (
-          <div className="mt-6 text-center text-sm text-gray-600">
-            <p>Default credentials: admin / [set in .env]</p>
-          </div>
-        )}
+       
       </div>
     </div>
   );
