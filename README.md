@@ -64,36 +64,41 @@ npm install
 ```
 
 For frontend:
-
+```bash
 cd Frontend
 npm install
-
+```
 
 Set up environment variables
 Create a .env file in your Backend folder and add:
 
+```bash
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
-
+```
 
 Run the development servers
 
 Start backend:
 
+```bash
 npm start
-
+```
 
 Start frontend:
 
+```bash
 npm run dev
-
+```
 
 Open your browser and visit:
-
+```bash
 http://localhost:5173
+```
 
 🧩 Folder Structure
+```bash
 Fikar/
 ├── Backend/
 │   ├── controllers/
@@ -112,6 +117,7 @@ Fikar/
 │   └── package.json
 │
 └── README.md
+```
 
 🔐 Roles Summary
 Role	Access	Description
