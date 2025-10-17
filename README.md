@@ -53,6 +53,7 @@ Admins have full control to **approve or disapprove vendor services** and can al
 ```bash
 git clone https://github.com/yourusername/fikar.git
 cd fixKar
+```
 
 Install dependencies
 
