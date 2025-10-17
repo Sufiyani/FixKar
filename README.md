@@ -57,10 +57,10 @@ cd fixKar
 Install dependencies
 
 For backend:
-
+```bash
 cd Backend
 npm install
-
+```
 
 For frontend:
 
