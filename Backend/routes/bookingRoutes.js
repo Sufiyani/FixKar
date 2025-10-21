@@ -6,13 +6,19 @@ import {
   updateBookingStatus,
   deleteBooking,
   getBookingStats,
+  getVendorBookings, // NEW
+  updateVendorBookingStatus // NEW
 } from "../controllers/bookingController.js";
-import { protectAdmin } from "../middlewares/authMiddleware.js";
+import { protectAdmin, protect } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
 // 📝 Public booking creation
 router.post("/", createBooking);
+
+// 🔐 Vendor routes (Protected)
+router.get("/vendor/my-bookings", protect, getVendorBookings);
+router.put("/vendor/:id/status", protect, updateVendorBookingStatus);
 
 // 🔐 Admin-only routes
 router.get("/", protectAdmin, getAllBookings);

@@ -164,3 +164,57 @@ export const getBookingStats = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Add these two new functions to your existing bookingController.js
+
+// 📋 Get bookings for logged-in vendor
+export const getVendorBookings = async (req, res) => {
+  try {
+    const vendorId = req.vendor._id;
+
+    const bookings = await Booking.find({ vendorId })
+      .populate('serviceId', 'category price location')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch bookings", error: error.message });
+  }
+};
+
+
+
+// ✅ Update booking status by vendor (Confirm/Complete)
+export const updateVendorBookingStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    const vendorId = req.vendor._id;
+
+    // Validate status
+    const allowedStatuses = ['Confirmed', 'Completed'];
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({ 
+        message: "Invalid status. Allowed: Confirmed, Completed" 
+      });
+    }
+
+    // Find booking and verify it belongs to this vendor
+    const booking = await Booking.findOne({ _id: id, vendorId });
+
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found or unauthorized" });
+    }
+
+    // Update status
+    booking.status = status;
+    await booking.save();
+
+    res.status(200).json({ 
+      message: `Booking ${status.toLowerCase()} successfully`, 
+      booking 
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update booking", error: error.message });
+  }
+};

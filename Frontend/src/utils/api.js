@@ -147,6 +147,24 @@ export const vendorAPI = {
     });
     return handleResponse(response);
   },
+
+  // Vendor Booking APIs
+  getMyBookings: async () => {
+    const response = await fetch(`${API_BASE_URL}/bookings/vendor/my-bookings`, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(response);
+  },
+
+  updateBookingStatus: async (bookingId, status) => {
+    const response = await fetch(`${API_BASE_URL}/bookings/vendor/${bookingId}/status`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ status }),
+    });
+    return handleResponse(response);
+  },
 };
 
 // Service APIs
