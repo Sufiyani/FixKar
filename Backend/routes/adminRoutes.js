@@ -10,6 +10,7 @@ import {
   getAllVendors,
   deleteVendor,
   getAllBookings,
+  //  cleanupOrphanedServices
 } from "../controllers/adminController.js";
 import { protectAdmin } from "../middlewares/authMiddleware.js";
 
@@ -34,5 +35,8 @@ router.get("/bookings", protectAdmin, getAllBookings);
 
 // 📊 Dashboard stats
 router.get("/stats", protectAdmin, getAdminStats);
+
+// 🧹 ONE-TIME CLEANUP ROUTE - ❌ DELETE AFTER USE
+// router.post("/cleanup-orphaned-services", protectAdmin, cleanupOrphanedServices);
 
 export default router;
