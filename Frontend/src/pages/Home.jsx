@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { 
   Search, Shield, Clock, Award, Star, TrendingUp, 
   CheckCircle, Phone, Mail, MapPin, Users, Zap,
@@ -63,6 +63,19 @@ const VideoModal = ({ onClose }) => {
 };
 
 const Home = () => {
+
+    const token = localStorage.getItem('accessToken');
+  const userType = localStorage.getItem('userType');
+
+  // Auto-redirect if logged in
+  if (token && userType) {
+    if (userType === 'admin') {
+      return <Navigate to="/admin-dashboard" replace />;
+    } else if (userType === 'vendor') {
+      return <Navigate to="/vendor-dashboard" replace />;
+    }
+  }
+
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [toast, setToast] = useState(null);

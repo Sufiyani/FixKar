@@ -6,7 +6,7 @@ import connectDB from "./lib/db.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import vendorRoutes from "./routes/vendorRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
-import { createAdmin } from "./controllers/adminController.js";
+
 
 dotenv.config();
 connectDB();
@@ -23,8 +23,7 @@ app.use(
   })
 );
 
-// ✅ Create default admin
-// createAdmin();
+
 
 // Routes
 app.get("/", (req, res) => {
